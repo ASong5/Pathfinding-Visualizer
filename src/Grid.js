@@ -61,9 +61,10 @@ export const Grid = () => {
   }, [gridSize]);
 
   useEffect(() => {
-    if(algoFinished)
+    if (algoFinished) {
       visualizeShortestPath();
-  }, [algoFinished])
+    }
+  }, [algoFinished]);
 
   const handleNodeClick = (row, col) => {
     const newGrid = [...grid];
@@ -123,22 +124,32 @@ export const Grid = () => {
     setGridSize(parseInt(e.target.value));
   };
 
-  const execAlgo = () => {
-    let visited = execBFS(grid, gridSize, startNode, endNode);
-    visualizeVisited(visited);
+  const execAlgo = async () => {
+    if (!algoFinished) {
+      let visited = execBFS(grid, gridSize, startNode, endNode);
+      if (visited === null) alert("no path");
+      else {
+        await visualizeVisited(visited);
+        setAlgoFinished(true);
+      }
+    }
   };
 
   const visualizeVisited = (visited) => {
-    visited.forEach((node, index) => {
-      setTimeout(() => {
-        setGrid((prevGrid) => {
-          const newGrid = [...prevGrid];
-          newGrid[node[0]][node[1]].isVisited = true;
-          return newGrid;
-        });
-      }, 100 * index);
+    return new Promise((resolve) => {
+      visited.forEach((node, index) => {
+        setTimeout(() => {
+          setGrid((prevGrid) => {
+            const newGrid = [...prevGrid];
+            newGrid[node[0]][node[1]].isVisited = true;
+            return newGrid;
+          });
+          if (index === visited.length - 1) {
+            resolve();
+          }
+        }, (2000 / visited.length) * index);
+      });
     });
-    setAlgoFinished(true);
   };
 
   const visualizeShortestPath = () => {
@@ -157,8 +168,9 @@ export const Grid = () => {
           newGrid[node[0]][node[1]].isShortest = true;
           return newGrid;
         });
-      }, 100 * index);
+      }, (2000 / path.length) * index);
     });
+    setAlgoFinished(false);
   };
 
   return (

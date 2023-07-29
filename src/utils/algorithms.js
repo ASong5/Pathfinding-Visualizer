@@ -42,4 +42,5 @@ export const execBFS = (grid, gridLength, startNode, endNode) => {
       }
     });
   }
+  return null;
 };

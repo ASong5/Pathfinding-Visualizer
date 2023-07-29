@@ -48,3 +48,7 @@
   .visited {
     background-color: yellow;
   }
+
+  .shortest {
+    background-color: blue;
+  }

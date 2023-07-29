@@ -12,23 +12,18 @@ const Node = (props) => {
     gridSize,
   } = props;
 
+  let classes = "node";
+  if (start) classes += " start";
+  else if (end) classes += " end";
+  else if (isWall) classes += " wall";
+  else {
+    classes +=
+      isVisited && isShortest ? " shortest" : isVisited ? " visited" : "";
+  }
+
   return (
     <div
-      className={`node ${
-        !start && !end
-          ? isWall
-            ? "wall"
-            : isVisited
-            ? "visited"
-            : isShortest
-            ? "shortest"
-            : ""
-          : start
-          ? "start"
-          : end
-          ? "end"
-          : ""
-      }`}
+      className={classes}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       style={{
