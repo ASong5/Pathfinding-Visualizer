@@ -4,6 +4,7 @@ import { execBFS } from "./utils/algorithms";
 import "./Grid.css";
 
 const DEFAULT_GRID_SIZE = 10;
+const MAX_GRID_SIZE = 30;
 
 const createEmptyGrid = (gridSize) => {
   const grid = [];
@@ -127,8 +128,8 @@ export const Grid = () => {
   const execAlgo = async () => {
     if (!algoFinished) {
       let visited = execBFS(grid, gridSize, startNode, endNode);
-      if (visited === null) alert("no path");
-      else {
+
+      if (visited !== null) {
         await visualizeVisited(visited);
         setAlgoFinished(true);
       }
@@ -219,7 +220,7 @@ export const Grid = () => {
             id="size_slider"
             type="range"
             min={DEFAULT_GRID_SIZE}
-            max="30"
+            max={MAX_GRID_SIZE}
             defaultValue={DEFAULT_GRID_SIZE}
           />
           <label htmlFor="size_slider">

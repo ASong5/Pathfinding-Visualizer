@@ -10,6 +10,7 @@ const isVisited = (visited, neighbour) => {
 export const execBFS = (grid, gridLength, startNode, endNode) => {
   if (!(startNode && endNode)) {
     alert("Please select a start and end node.");
+    return null;
   }
 
   let visited = [];
@@ -42,5 +43,6 @@ export const execBFS = (grid, gridLength, startNode, endNode) => {
       }
     });
   }
+  alert("no path");
   return null;
 };
