@@ -1,0 +1,50 @@
+.menu_options {
+    display:flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.menu_options > div {
+    padding: 15px;
+}
+
+.grid-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    user-select: none;
+  }
+
+  .grid {
+    display: grid;
+    border: 1px solid black; /* Grid border */
+    grid-auto-rows: 80px;
+    justify-content: center;
+    width: 75vw;
+    height: 75vh;
+    box-sizing: border-box; /* Include border in element's total width and height */
+  }
+
+  .node {
+    background-color: #fff; /* Default node color (white) */
+    box-sizing: border-box; /* Include border in element's total width and height */
+    border: 1px solid black; /* Grid border */
+  }
+
+  .wall {
+    background-color: #888; /* Wall node color (grey) */
+  }
+
+  .start {
+    background-color: green;
+  }
+
+  .end {
+    background-color: red;
+  }
+
+  .visited {
+    background-color: yellow;
+  }

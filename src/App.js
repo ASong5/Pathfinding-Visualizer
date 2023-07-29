@@ -1,10 +1,10 @@
 import './App.css';
-import { PathFinder } from './Pathfinder';
+import { Grid } from './Grid';
 
 function App() {
   return (
     <div className="App">
-      <PathFinder></PathFinder>
+      <Grid></Grid>
     </div>
   );
 }
