@@ -18,7 +18,13 @@ const Node = (props) => {
   else if (isWall) classes += " wall";
   else {
     classes +=
-      isVisited && isShortest ? " shortest" : isVisited ? " visited" : "";
+      isVisited && isShortest
+        ? " shortest"
+        : isVisited
+        ? " visited"
+        : isShortest
+        ? " shortest"
+        : "";
   }
 
   return (

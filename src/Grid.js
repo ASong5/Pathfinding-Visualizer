@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Node from "./Node";
-import { execBFS } from "./utils/algorithms";
+import { execBFS, execDFS } from "./utils/algorithms";
 import "./Grid.css";
 
 const DEFAULT_GRID_SIZE = 10;
+const MAX_GRID_SIZE = 50;
 
 const createEmptyGrid = (gridSize) => {
   const grid = [];
@@ -52,6 +53,7 @@ export const Grid = () => {
   const [startNode, setStartNode] = useState(null);
   const [endNode, setEndNode] = useState(null);
   const [algoFinished, setAlgoFinished] = useState(false);
+  const [algo, setAlgo] = useState("bfs");
 
   useEffect(() => {
     let newGridProps = resizeGrid(grid, gridSize);
@@ -120,17 +122,73 @@ export const Grid = () => {
     setEndNode(null);
   };
 
+  const handleAlgoChange = (e) => {
+    setAlgo(e.target.value);
+    const newGrid = [...grid];
+    for (let row of newGrid) {
+      for (let node of row) {
+        node.isVisited = false;
+        node.isShortest = false;
+      }
+    }
+    setAlgoFinished(false);
+  };
+
   const changeGridSize = (e) => {
     setGridSize(parseInt(e.target.value));
   };
 
+  const randomizeGrid = () => {
+    const newGrid = createEmptyGrid(gridSize);
+
+    const startX = Math.round(Math.random() * (gridSize - 1));
+    const startY = Math.round(Math.random() * (gridSize - 1));
+    let endX = Math.round(Math.random() * (gridSize - 1));
+    let endY = Math.round(Math.random() * (gridSize - 1));
+
+    while (JSON.stringify([startX, startY]) === JSON.stringify([endX, endY])) {
+      endX = Math.round(Math.random() * (gridSize - 1));
+      endY = Math.round(Math.random() * (gridSize - 1));
+    }
+
+    newGrid[startX][startY].isStart = true;
+    newGrid[endX][endY].isEnd = true;
+
+    for (let row = 0; row < gridSize; row++) {
+      for (let col = 0; col < gridSize; col++) {
+        if (!newGrid[row][col].isStart && !newGrid[row][col].isEnd) {
+          if (Math.random() <= Math.random()) {
+            newGrid[row][col].isWall = true;
+          }
+        }
+      }
+    }
+    setStartNode([startX, startY]);
+    setEndNode([endX, endY]);
+    setGrid(newGrid);
+  };
+
   const execAlgo = async () => {
     if (!algoFinished) {
-      let visited = execBFS(grid, gridSize, startNode, endNode);
-      if (visited === null) alert("no path");
-      else {
-        await visualizeVisited(visited);
-        setAlgoFinished(true);
+      let visited = [];
+      switch (algo) {
+        case "bfs":
+          visited = execBFS(grid, gridSize, startNode, endNode);
+          if (!visited) alert("no path");
+          else {
+            await visualizeVisited(visited);
+            setAlgoFinished(true);
+          }
+          break;
+
+        case "dfs":
+          if (!execDFS(grid, gridSize, startNode, endNode, visited))
+            alert("No Path");
+          else {
+            await visualizeVisited(visited);
+            setAlgoFinished(true);
+          }
+          break;
       }
     }
   };
@@ -141,7 +199,8 @@ export const Grid = () => {
         setTimeout(() => {
           setGrid((prevGrid) => {
             const newGrid = [...prevGrid];
-            newGrid[node[0]][node[1]].isVisited = true;
+            if (algo === "dfs") newGrid[node[0]][node[1]].isShortest = true;
+            else newGrid[node[0]][node[1]].isVisited = true;
             return newGrid;
           });
           if (index === visited.length - 1) {
@@ -153,6 +212,10 @@ export const Grid = () => {
   };
 
   const visualizeShortestPath = () => {
+    if (algo === "dfs") {
+      setAlgoFinished(false);
+      return;
+    }
     let currentNode = endNode;
     const path = [];
 
@@ -211,7 +274,7 @@ export const Grid = () => {
           <button onClick={handleResetGrid}>Reset Grid</button>
         </div>
         <div>
-          <button onClick={execAlgo}>Visualize It!</button>
+          <button onClick={randomizeGrid}>Random Grid</button>
         </div>
         <div>
           <input
@@ -219,12 +282,21 @@ export const Grid = () => {
             id="size_slider"
             type="range"
             min={DEFAULT_GRID_SIZE}
-            max="30"
+            max={MAX_GRID_SIZE}
             defaultValue={DEFAULT_GRID_SIZE}
           />
           <label htmlFor="size_slider">
             {gridSize}x{gridSize}
           </label>
+        </div>
+        <div>
+          <select name="algo" id="algo" onChange={handleAlgoChange}>
+            <option value="bfs">Breadth-First Search</option>
+            <option value="dfs">Depth-First Search</option>
+          </select>
+        </div>
+        <div>
+          <button onClick={execAlgo}>Visualize It!</button>
         </div>
       </div>
     </div>

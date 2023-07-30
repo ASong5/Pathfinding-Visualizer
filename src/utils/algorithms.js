@@ -7,6 +7,16 @@ const isVisited = (visited, neighbour) => {
   return false;
 };
 
+const getNeighbours = (node, gridSize) => {
+  let neighbours = [];
+  if (node[1] + 1 < gridSize) neighbours.push([node[0], node[1] + 1]);
+  if (node[0] - 1 >= 0) neighbours.push([node[0] - 1, node[1]]);
+  if (node[0] + 1 < gridSize) neighbours.push([node[0] + 1, node[1]]);
+  if (node[1] - 1 >= 0) neighbours.push([node[0], node[1] - 1]);
+
+  return neighbours;
+};
+
 export const execBFS = (grid, gridLength, startNode, endNode) => {
   if (!(startNode && endNode)) {
     alert("Please select a start and end node.");
@@ -22,25 +32,40 @@ export const execBFS = (grid, gridLength, startNode, endNode) => {
     let currNode = queue.shift();
     if (JSON.stringify(currNode) === JSON.stringify(endNode)) return visited;
 
-    let neighbours = [
-      [currNode[0] + 1, currNode[1]],
-      [currNode[0] - 1, currNode[1]],
-      [currNode[0], currNode[1] + 1],
-      [currNode[0], currNode[1] - 1],
-    ];
+    let neighbours = getNeighbours(currNode, gridLength);
 
     neighbours.forEach((neighbour) => {
-      if ((neighbour[0] >= 0 && neighbour[1] >= 0) && (neighbour[0] < gridLength && neighbour[1] < gridLength)) {
-        if (
-          !isVisited(visited, neighbour) &&
-          !grid[neighbour[0]][neighbour[1]].isWall
-        ) {
-          queue.push(neighbour);
-          visited.push(neighbour);
-          grid[neighbour[0]][neighbour[1]].parent = currNode;
-        }
+      if (
+        !isVisited(visited, neighbour) &&
+        !grid[neighbour[0]][neighbour[1]].isWall
+      ) {
+        queue.push(neighbour);
+        visited.push(neighbour);
+        grid[neighbour[0]][neighbour[1]].parent = currNode;
       }
     });
   }
-  return null;
+  return false;
+};
+
+export const execDFS = (grid, gridLength, currNode, endNode, visited) => {
+  if (JSON.stringify(currNode) === JSON.stringify(endNode)) {
+    return true;
+  }
+
+  visited.push(currNode);
+
+  let neighbours = getNeighbours(currNode, gridLength);
+
+  for (let neighbour of neighbours) {
+    if (
+      !isVisited(visited, neighbour) &&
+      !grid[neighbour[0]][neighbour[1]].isWall
+    ) {
+      if (execDFS(grid, gridLength, neighbour, endNode, visited)) {
+        return true;
+      }
+    }
+  }
+  return false;
 };
