@@ -140,29 +140,46 @@ export const Grid = () => {
 
   const randomizeGrid = () => {
     const newGrid = createEmptyGrid(gridSize);
-
+    const randomProbability = Math.random();
+    const maxWalls = Math.pow(gridSize, 2) * 0.2;
+  
     const startX = Math.round(Math.random() * (gridSize - 1));
     const startY = Math.round(Math.random() * (gridSize - 1));
     let endX = Math.round(Math.random() * (gridSize - 1));
     let endY = Math.round(Math.random() * (gridSize - 1));
-
+  
     while (JSON.stringify([startX, startY]) === JSON.stringify([endX, endY])) {
       endX = Math.round(Math.random() * (gridSize - 1));
       endY = Math.round(Math.random() * (gridSize - 1));
     }
-
+  
     newGrid[startX][startY].isStart = true;
     newGrid[endX][endY].isEnd = true;
+  
 
+    const cellsToSetWall = [];
     for (let row = 0; row < gridSize; row++) {
       for (let col = 0; col < gridSize; col++) {
         if (!newGrid[row][col].isStart && !newGrid[row][col].isEnd) {
-          if (Math.random() <= Math.random()) {
-            newGrid[row][col].isWall = true;
-          }
+          cellsToSetWall.push([row, col]);
         }
       }
     }
+  
+    for (let i = cellsToSetWall.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [cellsToSetWall[i], cellsToSetWall[j]] = [cellsToSetWall[j], cellsToSetWall[i]];
+    }
+  
+    let numWalls = 0;
+    for (let i = 0; i < cellsToSetWall.length && numWalls < maxWalls; i++) {
+      const [row, col] = cellsToSetWall[i];
+      if (Math.random() <= randomProbability) {
+        newGrid[row][col].isWall = true;
+        numWalls++;
+      }
+    }
+  
     setStartNode([startX, startY]);
     setEndNode([endX, endY]);
     setGrid(newGrid);
