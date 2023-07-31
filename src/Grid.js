@@ -3,9 +3,8 @@ import Node from "./Node";
 import { execBFS, execDFS } from "./utils/algorithms";
 import "./Grid.css";
 
-const DEFAULT_GRID_SIZE = 10;
+const DEFAULT_GRID_SIZE = 10 // square root of total grid size;
 const MAX_GRID_SIZE = 50;
-const ANIMATION_TIME = 2000; // in ms
 
 const createEmptyGrid = (gridSize) => {
   const grid = [];
@@ -54,6 +53,7 @@ export const Grid = () => {
   const [endNode, setEndNode] = useState(null);
   const [algoRunning, setAlgoRunning] = useState(false);
   const [algo, setAlgo] = useState("bfs");
+  const [animationTime, setAnimationTime] = useState(2000);
 
   useEffect(() => {
     let newGridProps = resizeGrid(grid, gridSize);
@@ -133,8 +133,13 @@ export const Grid = () => {
   };
 
   const handleAlgoChange = (e) => {
+    console.log(e.target.value);
     setAlgo(e.target.value);
     resetVisualization();
+  };
+
+  const changeAnimationTime = (e) => {
+    setAnimationTime(parseInt(e.target.value));
   };
 
   const changeGridSize = (e) => {
@@ -234,7 +239,7 @@ export const Grid = () => {
           if (index === visited.length - 1) {
             resolve();
           }
-        }, (ANIMATION_TIME / visited.length) * index);
+        }, (animationTime / visited.length) * index);
       });
     });
   };
@@ -258,7 +263,7 @@ export const Grid = () => {
           if (index === path.length - 1) {
             resolve();
           }
-        }, (ANIMATION_TIME / path.length) * index);
+        }, (animationTime / path.length) * index);
       });
     });
   };
@@ -343,6 +348,20 @@ export const Grid = () => {
           <button disabled={!algoRunning ? false : true} onClick={execAlgo}>
             {!algoRunning ? "Visualize It!" : "Running..."}
           </button>
+        </div>
+        <div>
+          <input
+            disabled={!algoRunning ? false : true}
+            onChange={changeAnimationTime}
+            id="animation_time_slider"
+            type="range"
+            min={0}
+            max={10000}
+            defaultValue={animationTime}
+          />
+          <label htmlFor="size_slider">
+            {Math.round(animationTime / 1000)} seconds
+          </label>
         </div>
       </div>
     </div>
