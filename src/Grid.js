@@ -3,7 +3,7 @@ import Node from "./Node";
 import { execBFS, execDFS } from "./utils/algorithms";
 import "./Grid.css";
 
-const DEFAULT_GRID_SIZE = 10 // square root of total grid size;
+const DEFAULT_GRID_SIZE = 10; // square root of total grid size;
 const MAX_GRID_SIZE = 50;
 
 const createEmptyGrid = (gridSize) => {
@@ -227,19 +227,24 @@ export const Grid = () => {
     setAlgoRunning(true);
     return new Promise((resolve) => {
       visited.forEach((node, index) => {
-        setTimeout(() => {
-          setGrid((prevGrid) => {
-            const newGrid = [...prevGrid];
-            if (algo === "dfs") newGrid[node[0]][node[1]].isShortest = true;
-            else {
-              newGrid[node[0]][node[1]].isVisited = true;
+        setTimeout(
+          () => {
+            setGrid((prevGrid) => {
+              const newGrid = [...prevGrid];
+              if (algo === "dfs") newGrid[node[0]][node[1]].isShortest = true;
+              else {
+                newGrid[node[0]][node[1]].isVisited = true;
+              }
+              return newGrid;
+            });
+            if (index === visited.length - 1) {
+              resolve();
             }
-            return newGrid;
-          });
-          if (index === visited.length - 1) {
-            resolve();
-          }
-        }, (animationTime / visited.length) * index);
+          },
+          algo === "dfs"
+            ? (animationTime / visited.length) * index
+            : (animationTime / 2 / visited.length) * index
+        );
       });
     });
   };
@@ -263,7 +268,7 @@ export const Grid = () => {
           if (index === path.length - 1) {
             resolve();
           }
-        }, (animationTime / path.length) * index);
+        }, (animationTime / 2 / path.length) * index);
       });
     });
   };
