@@ -84,6 +84,7 @@ export const Grid = () => {
         setEndNode(null);
       } else {
         newGrid[row][col].isStart = true;
+        newGrid[row][col].isWall = false;
         setStartNode([row, col]);
       }
     } else if (!endNode) {
@@ -92,6 +93,7 @@ export const Grid = () => {
         setStartNode(null);
       } else {
         newGrid[row][col].isEnd = true;
+        newGrid[row][col].isWall = false;
         setEndNode([row, col]);
       }
     }
