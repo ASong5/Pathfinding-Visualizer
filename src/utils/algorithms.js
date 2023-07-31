@@ -19,7 +19,7 @@ const getNeighbours = (node, gridSize) => {
 
 export const execBFS = (grid, gridLength, startNode, endNode) => {
   if (!(startNode && endNode)) {
-    alert("Please select a start and end node.");
+    return -1;
   }
 
   let visited = [];
@@ -49,6 +49,9 @@ export const execBFS = (grid, gridLength, startNode, endNode) => {
 };
 
 export const execDFS = (grid, gridLength, currNode, endNode, visited) => {
+  if (!(currNode && endNode)) {
+    return -1;
+  }
   if (JSON.stringify(currNode) === JSON.stringify(endNode)) {
     return true;
   }
