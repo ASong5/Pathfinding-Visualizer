@@ -28,13 +28,13 @@
   }
 
   .node {
-    background-color: #fff; /* Default node color (white) */
+    background-color: white; /* Default node color (white) */
     box-sizing: border-box; /* Include border in element's total width and height */
     border: 1px solid black; /* Grid border */
   }
 
   .wall {
-    background-color: #888; /* Wall node color (grey) */
+    background-color: black; /* Wall node color (grey) */
   }
 
   .start {

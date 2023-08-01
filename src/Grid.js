@@ -5,6 +5,7 @@ import "./Grid.css";
 
 const DEFAULT_GRID_SIZE = 10; // square root of total grid size;
 const MAX_GRID_SIZE = 50;
+const NUM_ALGOS = 2;
 
 const createEmptyGrid = (gridSize) => {
   const grid = [];
@@ -54,7 +55,9 @@ export const Grid = () => {
   const [algoRunning, setAlgoRunning] = useState(false);
   const [algo, setAlgo] = useState("bfs");
   const [animationTime, setAnimationTime] = useState(2000);
-  const [cachedPath, setCachedPath] = useState([]);
+  const [cachedPath, setCachedPath] = useState(
+    [Array.from({ length: NUM_ALGOS }, () => [])]
+  );
 
   useEffect(() => {
     let newGridProps = resizeGrid(grid, gridSize);
@@ -98,7 +101,7 @@ export const Grid = () => {
         setEndNode([row, col]);
       }
     }
-    setCachedPath([]);
+    setCachedPath(Array.from({ length: NUM_ALGOS }, () => []));
     setGrid(newGrid);
   };
 
@@ -106,7 +109,7 @@ export const Grid = () => {
     if (isMouseDown && startNode && endNode) {
       const newGrid = [...grid];
       newGrid[row][col].isWall = !newGrid[row][col].isWall;
-      setCachedPath([]);
+      setCachedPath(Array.from({ length: NUM_ALGOS }, () => []));
       setGrid(newGrid);
     }
   };
@@ -121,7 +124,7 @@ export const Grid = () => {
 
   const handleResetGrid = () => {
     setGrid(createEmptyGrid(gridSize));
-    setCachedPath([]);
+    setCachedPath(Array.from({ length: NUM_ALGOS }, () => []));
     setStartNode(null);
     setEndNode(null);
   };
@@ -139,7 +142,6 @@ export const Grid = () => {
   const handleAlgoChange = (e) => {
     console.log(e.target.value);
     setAlgo(e.target.value);
-    setCachedPath([]);
     resetVisualization();
   };
 
@@ -149,7 +151,7 @@ export const Grid = () => {
 
   const changeGridSize = (e) => {
     setGridSize(parseInt(e.target.value));
-    setCachedPath([]);
+    setCachedPath(Array.from({ length: NUM_ALGOS }, () => []));
   };
 
   const randomizeGrid = () => {
@@ -199,7 +201,7 @@ export const Grid = () => {
     setStartNode([startX, startY]);
     setEndNode([endX, endY]);
     setGrid(newGrid);
-    setCachedPath([]);
+    setCachedPath(Array.from({ length: NUM_ALGOS }, () => []));
   };
 
   const execAlgo = async () => {
@@ -208,35 +210,42 @@ export const Grid = () => {
       switch (algo) {
         case "bfs":
           visited =
-            cachedPath.length > 0
-              ? cachedPath
+            cachedPath[0].length > 0
+              ? cachedPath[0]
               : execBFS(grid, gridSize, startNode, endNode);
           if (!visited) alert("No path");
           else if (visited === -1) alert("Please select a start and end node.");
           else {
             await visualizeVisited(visited);
             await visualizeShortestPath();
-            setCachedPath(visited);
+            let newCachedPath = [...cachedPath];
+            newCachedPath[0] = visited;
+            setCachedPath(newCachedPath);
             setAlgoRunning(false);
           }
           break;
 
         case "dfs":
           let success = null;
-          if (cachedPath.length === 0) {
+          if (cachedPath[1].length === 0) {
             success = execDFS(grid, gridSize, startNode, endNode, visited);
             if (!success) alert("No Path");
             else if (success === -1)
               alert("Please select a start and end node.");
             else {
               await visualizeVisited(visited);
-              setCachedPath(visited);
+              let newCachedPath = [...cachedPath];
+              newCachedPath[1] = visited;
+              setCachedPath(newCachedPath);
               setAlgoRunning(false);
             }
           } else {
-            visited = cachedPath;
+            visited = cachedPath[1];
             await visualizeVisited(visited);
-            setCachedPath(visited);
+            let newCachedPath = [...cachedPath];
+            newCachedPath[1] = visited;
+            setCachedPath(newCachedPath);
+            setAlgoRunning(false);
             setAlgoRunning(false);
           }
 
