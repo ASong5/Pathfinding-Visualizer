@@ -54,6 +54,7 @@ export const Grid = () => {
   const [algoRunning, setAlgoRunning] = useState(false);
   const [algo, setAlgo] = useState("bfs");
   const [animationTime, setAnimationTime] = useState(2000);
+  const [cachedPath, setCachedPath] = useState([]);
 
   useEffect(() => {
     let newGridProps = resizeGrid(grid, gridSize);
@@ -97,6 +98,7 @@ export const Grid = () => {
         setEndNode([row, col]);
       }
     }
+    setCachedPath([]);
     setGrid(newGrid);
   };
 
@@ -104,6 +106,7 @@ export const Grid = () => {
     if (isMouseDown && startNode && endNode) {
       const newGrid = [...grid];
       newGrid[row][col].isWall = !newGrid[row][col].isWall;
+      setCachedPath([]);
       setGrid(newGrid);
     }
   };
@@ -118,6 +121,7 @@ export const Grid = () => {
 
   const handleResetGrid = () => {
     setGrid(createEmptyGrid(gridSize));
+    setCachedPath([]);
     setStartNode(null);
     setEndNode(null);
   };
@@ -135,6 +139,7 @@ export const Grid = () => {
   const handleAlgoChange = (e) => {
     console.log(e.target.value);
     setAlgo(e.target.value);
+    setCachedPath([]);
     resetVisualization();
   };
 
@@ -144,6 +149,7 @@ export const Grid = () => {
 
   const changeGridSize = (e) => {
     setGridSize(parseInt(e.target.value));
+    setCachedPath([]);
   };
 
   const randomizeGrid = () => {
@@ -193,6 +199,7 @@ export const Grid = () => {
     setStartNode([startX, startY]);
     setEndNode([endX, endY]);
     setGrid(newGrid);
+    setCachedPath([]);
   };
 
   const execAlgo = async () => {
@@ -200,24 +207,39 @@ export const Grid = () => {
       let visited = [];
       switch (algo) {
         case "bfs":
-          visited = execBFS(grid, gridSize, startNode, endNode);
+          visited =
+            cachedPath.length > 0
+              ? cachedPath
+              : execBFS(grid, gridSize, startNode, endNode);
           if (!visited) alert("No path");
           else if (visited === -1) alert("Please select a start and end node.");
           else {
             await visualizeVisited(visited);
             await visualizeShortestPath();
+            setCachedPath(visited);
             setAlgoRunning(false);
           }
           break;
 
         case "dfs":
-          let success = execDFS(grid, gridSize, startNode, endNode, visited);
-          if (!success) alert("No Path");
-          else if (success === -1) alert("Please select a start and end node.");
-          else {
+          let success = null;
+          if (cachedPath.length === 0) {
+            success = execDFS(grid, gridSize, startNode, endNode, visited);
+            if (!success) alert("No Path");
+            else if (success === -1)
+              alert("Please select a start and end node.");
+            else {
+              await visualizeVisited(visited);
+              setCachedPath(visited);
+              setAlgoRunning(false);
+            }
+          } else {
+            visited = cachedPath;
             await visualizeVisited(visited);
+            setCachedPath(visited);
             setAlgoRunning(false);
           }
+
           break;
       }
     }
