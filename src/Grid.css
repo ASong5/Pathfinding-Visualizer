@@ -19,22 +19,22 @@
 
   .grid {
     display: grid;
-    border: 1px solid black; /* Grid border */
+    border: 1px solid black; 
     grid-auto-rows: 80px;
     justify-content: center;
     width: 75vw;
     height: 75vh;
-    box-sizing: border-box; /* Include border in element's total width and height */
+    box-sizing: border-box;
   }
 
   .node {
-    background-color: white; /* Default node color (white) */
-    box-sizing: border-box; /* Include border in element's total width and height */
-    border: 1px solid black; /* Grid border */
+    background-color: white; 
+    box-sizing: border-box;
+    border: 1px solid black; 
   }
 
   .wall {
-    background-color: black; /* Wall node color (grey) */
+    background-color: rgb(10, 53, 84)
   }
 
   .start {

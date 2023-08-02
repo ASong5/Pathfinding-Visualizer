@@ -10,6 +10,7 @@ const Node = (props) => {
     onClick,
     onMouseEnter,
     gridSize,
+    weight,
   } = props;
 
   let classes = "node";
@@ -35,8 +36,13 @@ const Node = (props) => {
       style={{
         width: `calc(75vw / ${gridSize})`,
         height: `calc(75vh / ${gridSize})`,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
       }}
-    ></div>
+    >
+      {weight > 0 ? `${weight}` : ""}
+    </div>
   );
 };
 

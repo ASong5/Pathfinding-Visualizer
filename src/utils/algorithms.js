@@ -1,3 +1,5 @@
+import ALGOS from "../Grid";
+
 const isVisited = (visited, neighbour) => {
   for (let i = 0; i < visited.length; i++) {
     if (visited[i].toString() === neighbour.toString()) {
@@ -17,12 +19,24 @@ const getNeighbours = (node, gridSize) => {
   return neighbours;
 };
 
-export const execBFS = (grid, gridLength, startNode, endNode) => {
-  if (!(startNode && endNode)) {
-    return -1;
-  }
+export const runAlgo = (algo, grid, gridSize, startNode, endNode, visited) => {
+  let result = {};
 
-  let visited = [];
+  switch (algo) {
+    case ALGOS.bfs:
+      result = execBFS(grid, gridSize, startNode, endNode, visited);
+      break;
+    case ALGOS.dfs:
+      result = execDFS(grid, gridSize, startNode, endNode, visited);
+      break;
+    default:
+      result.visited = visited;
+      result.success = false;
+  }
+  return result;
+};
+
+const execBFS = (grid, gridLength, startNode, endNode, visited) => {
   let queue = [];
 
   visited.push(startNode);
@@ -30,7 +44,8 @@ export const execBFS = (grid, gridLength, startNode, endNode) => {
 
   while (queue.length > 0) {
     let currNode = queue.shift();
-    if (JSON.stringify(currNode) === JSON.stringify(endNode)) return visited;
+    if (currNode[0] === endNode[0] && currNode[1] === endNode[1])
+      return true;
 
     let neighbours = getNeighbours(currNode, gridLength);
 
@@ -48,17 +63,14 @@ export const execBFS = (grid, gridLength, startNode, endNode) => {
   return false;
 };
 
-export const execDFS = (grid, gridLength, currNode, endNode, visited) => {
-  if (!(currNode && endNode)) {
-    return -1;
-  }
-  if (JSON.stringify(currNode) === JSON.stringify(endNode)) {
+const execDFS = (grid, gridLength, startNode, endNode, visited) => {
+  if (startNode[0] === endNode[0] && startNode[1] === endNode[1]) {
     return true;
   }
 
-  visited.push(currNode);
+  visited.push(startNode);
 
-  let neighbours = getNeighbours(currNode, gridLength);
+  let neighbours = getNeighbours(startNode, gridLength);
 
   for (let neighbour of neighbours) {
     if (
