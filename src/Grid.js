@@ -74,7 +74,7 @@ export const Grid = () => {
   );
 
   useEffect(() => {
-    const test = async () => {
+    const execShortestPath = async () => {
       if (algo !== ALGOS.dfs) {
         if (animationCount === cachedPath[algo].path.length - 2) {
           await visualizeShortestPath();
@@ -83,7 +83,7 @@ export const Grid = () => {
         }
       }
     };
-    test();
+    execShortestPath();
   }, [animationCount]);
 
   useEffect(() => {
