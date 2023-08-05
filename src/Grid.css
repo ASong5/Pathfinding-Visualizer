@@ -19,22 +19,22 @@
 
   .grid {
     display: grid;
-    border: 1px solid black; /* Grid border */
+    border: 1px solid black; 
     grid-auto-rows: 80px;
     justify-content: center;
     width: 75vw;
     height: 75vh;
-    box-sizing: border-box; /* Include border in element's total width and height */
+    box-sizing: border-box;
   }
 
   .node {
-    background-color: #fff; /* Default node color (white) */
-    box-sizing: border-box; /* Include border in element's total width and height */
-    border: 1px solid black; /* Grid border */
+    background-color: white; 
+    box-sizing: border-box;
+    border: 1px solid black; 
   }
 
   .wall {
-    background-color: #888; /* Wall node color (grey) */
+    background-color: rgb(10, 53, 84)
   }
 
   .start {
@@ -45,10 +45,19 @@
     background-color: red;
   }
 
-  .visited {
-    animation-name: visited;
-    animation-duration: 2s;
-    background-color: yellow;
+  @keyframes test {
+    16%{background-color: red;}
+    33%{background-color: orange;}
+    50%{background-color: yellow;}
+    66%{background-color: green;}
+    83%{background-color: blue;}
+    100%{background-color: violet;}
+  }
+
+  .visited{
+    background-color: purple;
+    animation-duration: var(--animationTime);
+    animation-name: test
   }
 
   .shortest {
