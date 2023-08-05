@@ -65,12 +65,33 @@ export const Grid = () => {
   const [visualizationRunning, setVisualizationRunning] = useState(false);
   const [algo, setAlgo] = useState(ALGOS.bfs);
   const [animationTime, setAnimationTime] = useState(2000);
+  const [animationCount, setAnimationCount] = useState(0);
   const [cachedPath, setCachedPath] = useState(
     Array.from({ length: Object.keys(ALGOS).length }, () => ({
       path: [],
       failedPrevious: false,
     }))
   );
+
+  useEffect(() => {
+    const test = async () => {
+      if (algo !== ALGOS.dfs) {
+        if (animationCount === cachedPath[algo].path.length - 2) {
+          await visualizeShortestPath();
+          setAnimationCount(0);
+          setVisualizationRunning(false);
+        }
+      }
+    };
+    test();
+  }, [animationCount]);
+
+  useEffect(() => {
+    document.documentElement.style.setProperty(
+      "--animationTime",
+      `${animationTime / 2000}s`
+    );
+  }, []);
 
   useEffect(() => {
     let newGridProps = resizeGrid(grid, gridSize);
@@ -175,15 +196,12 @@ export const Grid = () => {
         break;
       case "dfs":
         algo = ALGOS.dfs;
-
         break;
       case "dijkstra":
         algo = ALGOS.dijkstra;
-
         break;
       case "A*":
         algo = ALGOS.aStar;
-
         break;
       default:
         algo = ALGOS.bfs;
@@ -194,6 +212,10 @@ export const Grid = () => {
 
   const changeAnimationTime = (e) => {
     setAnimationTime(parseInt(e.target.value));
+    document.documentElement.style.setProperty(
+      "--animationTime",
+      `${animationTime / 1000}s`
+    );
   };
 
   const changeGridSize = (e) => {
@@ -292,13 +314,11 @@ export const Grid = () => {
         } else {
           await visualizeVisited(cachedPath[algo].path);
         }
-
-        if (algo !== ALGOS.dfs) await visualizeShortestPath();
+        if (algo === ALGOS.dfs) setVisualizationRunning(false);
       } else {
         alert("Please select a start and end node.");
       }
     }
-    setVisualizationRunning(false);
   };
 
   const visualizeVisited = (visited) => {
@@ -321,7 +341,7 @@ export const Grid = () => {
             }
           },
           algo === ALGOS.dfs
-            ? (animationTime / visited.length) * index
+            ? (animationTime * 2 / visited.length) * index
             : (animationTime / 2 / visited.length) * index
         );
       });
@@ -380,6 +400,7 @@ export const Grid = () => {
                   isVisited={node.isVisited}
                   isShortest={node.isShortest}
                   weight={node.weight}
+                  setAnimationCount={setAnimationCount}
                   onClick={() => handleNodeClick(rowIndex, colIndex)}
                   onMouseEnter={() => handleNodeDrag(rowIndex, colIndex)}
                 />
@@ -454,7 +475,7 @@ export const Grid = () => {
             defaultValue={animationTime}
           />
           <label htmlFor="size_slider">
-            {Math.round(animationTime / 1000)} seconds
+            {Math.round((animationTime / 1000) * 2)} seconds
           </label>
         </div>
       </div>

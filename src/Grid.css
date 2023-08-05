@@ -45,8 +45,19 @@
     background-color: red;
   }
 
-  .visited {
-    background-color: yellow;
+  @keyframes test {
+    16%{background-color: red;}
+    33%{background-color: orange;}
+    50%{background-color: yellow;}
+    66%{background-color: green;}
+    83%{background-color: blue;}
+    100%{background-color: violet;}
+  }
+
+  .visited{
+    background-color: purple;
+    animation-duration: var(--animationTime);
+    animation-name: test
   }
 
   .shortest {

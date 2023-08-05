@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 
 const Node = (props) => {
   const {
@@ -11,6 +11,7 @@ const Node = (props) => {
     onMouseEnter,
     gridSize,
     weight,
+    setAnimationCount,
   } = props;
 
   let classes = "node";
@@ -27,9 +28,25 @@ const Node = (props) => {
         ? " shortest"
         : "";
   }
+  const nodeRef = useRef(null);
+
+  useEffect(() => {
+    nodeRef.current.addEventListener("animationend", handleAnimationEnd);
+
+    return () => {
+      let tempNodeRef = nodeRef;
+      if(tempNodeRef.current)
+      tempNodeRef.current.removeEventListener("animationend", handleAnimationEnd);
+    };
+  }, []);
+
+  const handleAnimationEnd = () => {
+    setAnimationCount((prev) => prev + 1);
+  };
 
   return (
     <div
+      ref={nodeRef}
       className={classes}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
