@@ -62,18 +62,7 @@
 
   .shortest {
     animation-name: shortest;
-    animation-duration: 2s;
     background-color: blue;
-  }
-
-  @keyframes visited {
-    from {background-color: white;}
-    to {background-color: yellow;}
-  }
-
-  @keyframes shortest {
-    from {background-color: yellow;}
-    to {background-color: blue;}
   }
 
  
