@@ -211,10 +211,11 @@ export const Grid = () => {
   };
 
   const changeAnimationTime = (e) => {
-    setAnimationTime(parseInt(e.target.value));
+    setAnimationTime(e.target.value);
+    console.log(e.target.value)
     document.documentElement.style.setProperty(
       "--animationTime",
-      `${animationTime / 1000}s`
+      `${e.target.value / 1000}s`
     );
   };
 
@@ -474,7 +475,7 @@ export const Grid = () => {
             max={10000}
             defaultValue={animationTime}
           />
-          <label htmlFor="size_slider">
+          <label htmlFor="animation_time_slider">
             {Math.round((animationTime / 1000) * 2)} seconds
           </label>
         </div>
