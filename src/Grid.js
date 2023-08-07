@@ -6,6 +6,7 @@ import "./Grid.css";
 const DEFAULT_GRID_SIZE = 10; // square root of total grid size;
 const MAX_GRID_SIZE = 50;
 const ALGOS = { bfs: 0, dfs: 1, dijkstra: 2, aStar: 3 };
+const ANIMATION_TYPE = { swarm: 0, fade: 1 };
 
 const algoToString = (algo) => {
   let algoString = "";
@@ -14,6 +15,13 @@ const algoToString = (algo) => {
   else if (algo === ALGOS.dijkstra) algoString = "Dijkstra Shortest Path";
   else if (algo === ALGOS.aStar) algoString = "A* Shortest Path";
   return algoString;
+};
+
+const animationTypeToString = (animationType) => {
+  let animationTypeString = "";
+  if (animationType === ANIMATION_TYPE.swarm) animationTypeString = "Swarm";
+  else if (animationType === ANIMATION_TYPE.fade) animationTypeString = "Fade";
+  return animationTypeString;
 };
 
 const createEmptyGrid = (gridSize) => {
@@ -66,6 +74,7 @@ export const Grid = () => {
   const [algo, setAlgo] = useState(ALGOS.bfs);
   const [animationTime, setAnimationTime] = useState(2000);
   const [animationCount, setAnimationCount] = useState(0);
+  const [animationType, setAnimationType] = useState(ANIMATION_TYPE.swarm);
   const [cachedPath, setCachedPath] = useState(
     Array.from({ length: Object.keys(ALGOS).length }, () => ({
       path: [],
@@ -210,9 +219,27 @@ export const Grid = () => {
     resetVisualization();
   };
 
+  const handleAnimationType = (e) => {
+    let animationType = null;
+    switch (e.target.value) {
+      case "swarm":
+        console.log(e.target.value);
+        animationType = ANIMATION_TYPE.swarm;
+        break;
+      case "fade":
+        console.log(e.target.value);
+
+        animationType = ANIMATION_TYPE.fade;
+        break;
+      default:
+        animationType = ANIMATION_TYPE.swarm;
+    }
+    setAnimationType(animationType);
+    resetVisualization();
+  };
+
   const changeAnimationTime = (e) => {
     setAnimationTime(e.target.value);
-    console.log(e.target.value)
     document.documentElement.style.setProperty(
       "--animationTime",
       `${e.target.value / 1000}s`
@@ -342,7 +369,7 @@ export const Grid = () => {
             }
           },
           algo === ALGOS.dfs
-            ? (animationTime * 2 / visited.length) * index
+            ? ((animationTime * 2) / visited.length) * index
             : (animationTime / 2 / visited.length) * index
         );
       });
@@ -381,35 +408,35 @@ export const Grid = () => {
       onMouseUp={handleMouseUp}
       style={{ pointerEvents: `${!visualizationRunning ? "auto" : "none"}` }}
     >
-      <div style={{ display: "block" }}>
-        <div
-          className="grid"
-          style={{
-            gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
-            gridTemplateRows: `repeat(${gridSize}, 1fr)`,
-          }}
-        >
-          {grid.map((row, rowIndex) => (
-            <div key={rowIndex} className="row">
-              {row.map((node, colIndex) => (
-                <Node
-                  key={rowIndex - colIndex}
-                  start={node.isStart}
-                  end={node.isEnd}
-                  gridSize={gridSize}
-                  isWall={node.isWall}
-                  isVisited={node.isVisited}
-                  isShortest={node.isShortest}
-                  weight={node.weight}
-                  setAnimationCount={setAnimationCount}
-                  onClick={() => handleNodeClick(rowIndex, colIndex)}
-                  onMouseEnter={() => handleNodeDrag(rowIndex, colIndex)}
-                />
-              ))}
-            </div>
-          ))}
-        </div>
+      <div
+        className="grid"
+        style={{
+          gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
+          gridTemplateRows: `repeat(${gridSize}, 1fr)`,
+        }}
+      >
+        {grid.map((row, rowIndex) => (
+          <div key={rowIndex} className="row">
+            {row.map((node, colIndex) => (
+              <Node
+                key={rowIndex - colIndex}
+                start={node.isStart}
+                end={node.isEnd}
+                gridSize={gridSize}
+                isWall={node.isWall}
+                isVisited={node.isVisited}
+                isShortest={node.isShortest}
+                weight={node.weight}
+                setAnimationCount={setAnimationCount}
+                animationType={animationType}
+                onClick={() => handleNodeClick(rowIndex, colIndex)}
+                onMouseEnter={() => handleNodeDrag(rowIndex, colIndex)}
+              />
+            ))}
+          </div>
+        ))}
       </div>
+
       <div className="menu_options">
         <div>
           <button
@@ -466,6 +493,22 @@ export const Grid = () => {
           </button>
         </div>
         <div>
+          <select
+            disabled={!visualizationRunning ? false : true}
+            name="animationType"
+            id="animationType"
+            onChange={handleAnimationType}
+          >
+            {Object.keys(ANIMATION_TYPE).map((key, idx) => {
+              return (
+                <option key={idx} value={key}>
+                  {animationTypeToString(ANIMATION_TYPE[key])}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+        <div>
           <input
             disabled={!visualizationRunning ? false : true}
             onChange={changeAnimationTime}
@@ -484,4 +527,4 @@ export const Grid = () => {
   );
 };
 
-export default ALGOS;
+export { ALGOS, ANIMATION_TYPE };

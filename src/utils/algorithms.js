@@ -1,4 +1,4 @@
-import ALGOS from "../Grid";
+import { ALGOS } from "../Grid";
 
 const isVisited = (visited, neighbour) => {
   for (let i = 0; i < visited.length; i++) {
@@ -44,8 +44,7 @@ const execBFS = (grid, gridLength, startNode, endNode, visited) => {
 
   while (queue.length > 0) {
     let currNode = queue.shift();
-    if (currNode[0] === endNode[0] && currNode[1] === endNode[1])
-      return true;
+    if (currNode[0] === endNode[0] && currNode[1] === endNode[1]) return true;
 
     let neighbours = getNeighbours(currNode, gridLength);
 

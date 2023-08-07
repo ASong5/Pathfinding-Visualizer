@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from "react";
+import { ANIMATION_TYPE } from "./Grid";
 
 const Node = (props) => {
   const {
@@ -12,6 +13,7 @@ const Node = (props) => {
     gridSize,
     weight,
     setAnimationCount,
+    animationType,
   } = props;
 
   let classes = "node";
@@ -23,7 +25,9 @@ const Node = (props) => {
       isVisited && isShortest
         ? " shortest"
         : isVisited
-        ? " visited"
+        ? animationType === ANIMATION_TYPE.swarm
+          ? " visited-swarm"
+          : " visited-fade"
         : isShortest
         ? " shortest"
         : "";
@@ -35,13 +39,33 @@ const Node = (props) => {
 
     return () => {
       let tempNodeRef = nodeRef;
-      if(tempNodeRef.current)
-      tempNodeRef.current.removeEventListener("animationend", handleAnimationEnd);
+      if (tempNodeRef.current)
+        tempNodeRef.current.removeEventListener(
+          "animationend",
+          handleAnimationEnd
+        );
+    };
+  }, [animationType]);
+
+  useEffect(() => {
+    nodeRef.current.addEventListener("animationend", handleAnimationEnd);
+
+    return () => {
+      let tempNodeRef = nodeRef;
+      if (tempNodeRef.current)
+        tempNodeRef.current.removeEventListener(
+          "animationend",
+          handleAnimationEnd
+        );
     };
   }, []);
 
-  const handleAnimationEnd = () => {
-    setAnimationCount((prev) => prev + 1);
+  const handleAnimationEnd = (e) => {
+    if (
+      e.target.classList.contains("visited-swarm") ||
+      e.target.classList.contains("visited-fade")
+    )
+      setAnimationCount((prev) => prev + 1);
   };
 
   return (
@@ -51,8 +75,8 @@ const Node = (props) => {
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       style={{
-        width: `calc(75vw / ${gridSize})`,
-        height: `calc(75vh / ${gridSize})`,
+        width: `calc(90vh / ${gridSize})`,
+        height: `calc(90vh / ${gridSize})`,
         display: "flex",
         justifyContent: "center",
         alignItems: "center",

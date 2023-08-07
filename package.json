@@ -13,8 +13,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "WATCHPACK_POLLING=true react-scripts start",
-    "predeploy": "npm run build",
+    "start": "react-scripts start",
+    "predeploy": "yarn run build",
     "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test",

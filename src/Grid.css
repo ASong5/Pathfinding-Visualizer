@@ -1,68 +1,122 @@
 .menu_options {
-    display:flex;
-    justify-content: center;
-    align-items: flex-end;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
 }
 
 .menu_options > div {
-    padding: 15px;
+  padding: 15px;
 }
 
 .grid-container {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh;
-    user-select: none;
-  }
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  user-select: none;
+  position: relative;
+}
 
-  .grid {
-    display: grid;
-    border: 1px solid black; 
-    grid-auto-rows: 80px;
-    justify-content: center;
-    width: 75vw;
-    height: 75vh;
-    box-sizing: border-box;
-  }
+.grid {
+  display: grid;
+  border: 1px solid black; 
+  justify-content: center;
+  width: 90vh;
+  height: 90vh;
+  box-sizing: border-box;
+}
 
-  .node {
-    background-color: white; 
-    box-sizing: border-box;
-    border: 1px solid black; 
-  }
+.node {
+  background-color: white;
+  box-sizing: border-box;
+  border: 1px solid black;
+}
 
-  .wall {
-    background-color: rgb(10, 53, 84)
-  }
+.wall {
+  background-color: #87a9fc;
+}
 
-  .start {
-    background-color: green;
-  }
+.start {
+  background-color: #5ef19b;
+}
 
-  .end {
+.end {
+  background-color: #fd686f;
+}
+
+@keyframes visited-color-animation-fade {
+  0%{background-color: red;}
+  16%{background-color: red;}
+  33%{background-color: orange;}
+  50%{background-color: yellow;}
+  66%{background-color: green;}
+  83%{background-color: blue;}
+  100%{background-color: violet;}
+}
+
+@keyframes visited-color-animation-swarm {
+  0% {
     background-color: red;
+    transform: scale(0);
   }
-
-  @keyframes visited-color-animation {
-    0%{background-color: red;}
-    16%{background-color: red;}
-    33%{background-color: orange;}
-    50%{background-color: yellow;}
-    66%{background-color: green;}
-    83%{background-color: blue;}
-    100%{background-color: violet;}
+  16% {
+    background-color: red;
+    transform: scale(0.5);
   }
-
-  .visited{
+  33% {
+    background-color: orange;
+    transform: scale(0.85);
+  }
+  50% {
+    background-color: yellow;
+    transform: scale(1.3);
+  }
+  66% {
+    background-color: green;
+    transform: scale(1.2);
+  }
+  83% {
+    background-color: blue;
+    transform: scale(1.1);
+  }
+  100% {
     background-color: violet;
-    animation-duration: var(--animationTime);
-    animation-name: visited-color-animation
+    transform: scale(1);
   }
+}
 
-  .shortest {
+.visited-swarm {
+  background-color: violet;
+  animation-duration: var(--animationTime);
+  animation-name: visited-color-animation-swarm;
+}
+
+.visited-fade {
+  background-color: violet;
+  animation-duration: var(--animationTime);
+  animation-name: visited-color-animation-fade;
+}
+
+.shortest {
+  animation-name: shortest-color-animation;
+  background-color: blue;
+  animation-duration: var(--animationTime);
+}
+
+@keyframes shortest-color-animation {
+  0% {
+    transform: scale(0.4);
     background-color: blue;
   }
 
- 
+  50% {
+    transform: scale(1.3);
+    background-color: blue;
+  }
+
+  100% {
+    transform: scale(1);
+    background-color: blue;
+  }
+}
