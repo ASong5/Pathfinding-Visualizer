@@ -46,6 +46,7 @@
   }
 
   @keyframes visited-color-animation {
+    0%{background-color: red;}
     16%{background-color: red;}
     33%{background-color: orange;}
     50%{background-color: yellow;}
@@ -55,7 +56,7 @@
   }
 
   .visited{
-    background-color: purple;
+    background-color: violet;
     animation-duration: var(--animationTime);
     animation-name: visited-color-animation
   }
