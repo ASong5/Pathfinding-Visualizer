@@ -1,38 +1,90 @@
-.App {
-  text-align: center;
+:root {
+  --light: #d8dbe0;
+  --dark: #28292c;
+  --link: rgb(27, 129, 112);
+  --link-hover: rgb(24, 94, 82);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.link{
+  text-decoration: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.link:visited{
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.link:hover{
+  color: #8AB4F8;
+  text-decoration: underline;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+
+.App {
+  display: flex;
+  flex-direction: column;
 }
+
+.body-header {
+  display: flex;
+  flex-direction: column;
+  width: 98%;
+  margin-left: 20px;
+}
+
+.heading {
+  display: flex;
+  flex-direction: row;
+  
+  width: 100%;
+  gap: 87%;
+  white-space: nowrap;
+}
+
+.sub-heading {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+}
+
+h1,
+h3 {
+  font-weight: 600;
+  margin: 0;
+}
+
+h3 {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 2.5em;
+}
+
+.logo-container{
+  display: flex;
+  align-self: flex-end;
+}
+
+.logo,
+.dark-logo {
+  max-width: 42px;
+  flex-shrink: 0;
+}
+
+.dark-logo {
+  filter: invert(100%) !important;
+}
+
+.dark-mode {
+  background-color: #0D1117;
+  color: white;
+}
+
+.light-mode {
+  background-color: white;
+  color: black;
+}
+

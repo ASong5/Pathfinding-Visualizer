@@ -75,8 +75,8 @@ const Node = (props) => {
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       style={{
-        width: `calc(90vh / ${gridSize})`,
-        height: `calc(90vh / ${gridSize})`,
+        width: `calc(60vw / ${gridSize})`,
+        height: `calc(60vh / ${gridSize})`,
         display: "flex",
         justifyContent: "center",
         alignItems: "center",

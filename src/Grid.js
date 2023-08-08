@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Node from "./Node";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { runAlgo } from "./utils/algorithms";
 import "./Grid.css";
 
@@ -64,7 +66,7 @@ const resizeGrid = (grid, newGridSize) => {
   return [newGrid, isStart, isEnd];
 };
 
-export const Grid = () => {
+export const Grid = ({handleDarkModeInputChange}) => {
   const [grid, setGrid] = useState(createEmptyGrid(DEFAULT_GRID_SIZE));
   const [gridSize, setGridSize] = useState(DEFAULT_GRID_SIZE);
   const [isMouseDown, setIsMouseDown] = useState(false);
@@ -223,12 +225,9 @@ export const Grid = () => {
     let animationType = null;
     switch (e.target.value) {
       case "swarm":
-        console.log(e.target.value);
         animationType = ANIMATION_TYPE.swarm;
         break;
       case "fade":
-        console.log(e.target.value);
-
         animationType = ANIMATION_TYPE.fade;
         break;
       default:
@@ -402,78 +401,152 @@ export const Grid = () => {
   };
 
   return (
-    <div
-      className="grid-container"
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      style={{ pointerEvents: `${!visualizationRunning ? "auto" : "none"}` }}
-    >
+    <div className="parent-container">
       <div
-        className="grid"
-        style={{
-          gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
-          gridTemplateRows: `repeat(${gridSize}, 1fr)`,
-        }}
+        className="grid-container"
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
       >
-        {grid.map((row, rowIndex) => (
-          <div key={rowIndex} className="row">
-            {row.map((node, colIndex) => (
-              <Node
-                key={rowIndex - colIndex}
-                start={node.isStart}
-                end={node.isEnd}
-                gridSize={gridSize}
-                isWall={node.isWall}
-                isVisited={node.isVisited}
-                isShortest={node.isShortest}
-                weight={node.weight}
-                setAnimationCount={setAnimationCount}
-                animationType={animationType}
-                onClick={() => handleNodeClick(rowIndex, colIndex)}
-                onMouseEnter={() => handleNodeDrag(rowIndex, colIndex)}
-              />
-            ))}
+        <div className="grid-caption">
+          <p>
+            Click two cells to set a{" "}
+            <span style={{ color: "#5ef19b" }}>start</span> and{" "}
+            <span style={{ color: "#fd686f" }}>end</span> node, respectively.
+            <span className="info-icon">
+              <FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>
+              <span className="tooltip-text-right">
+                Click on or drag your over cells to <b>draw walls</b> (
+                <span style={{ color: "#5ef19b", fontWeight: "1000" }}>
+                  start
+                </span>{" "}
+                and{" "}
+                <span style={{ color: "#fd686f", fontWeight: "1000" }}>
+                  end
+                </span>{" "}
+                nodes must be set first).
+              </span>
+            </span>
+          </p>
+          <div className="grid-caption-buttons">
+            <div>
+              <button
+                className="random-button"
+                disabled={!visualizationRunning ? false : true}
+                onClick={randomizeGrid}
+                style={{ color: !visualizationRunning ? "white" : "grey" }}
+              >
+                Random Grid
+              </button>
+            </div>
+            <div>
+              <button
+                className="reset-button"
+                disabled={!visualizationRunning ? false : true}
+                onClick={handleResetGrid}
+                style={{ color: !visualizationRunning ? "white" : "grey" }}
+              >
+                Reset Grid
+              </button>
+            </div>
           </div>
-        ))}
+        </div>
+        <div
+          className="grid"
+          style={{
+            gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
+            gridTemplateRows: `repeat(${gridSize}, 1fr)`,
+            pointerEvents: `${!visualizationRunning ? "auto" : "none"}`,
+          }}
+        >
+          {grid.map((row, rowIndex) => (
+            <div key={rowIndex} className="row">
+              {row.map((node, colIndex) => (
+                <Node
+                  key={rowIndex - colIndex}
+                  start={node.isStart}
+                  end={node.isEnd}
+                  gridSize={gridSize}
+                  isWall={node.isWall}
+                  isVisited={node.isVisited}
+                  isShortest={node.isShortest}
+                  weight={node.weight}
+                  setAnimationCount={setAnimationCount}
+                  animationType={animationType}
+                  onClick={() => handleNodeClick(rowIndex, colIndex)}
+                  onMouseEnter={() => handleNodeDrag(rowIndex, colIndex)}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+        <div className="legend">
+          <div className="legend-item">
+            <span className="legend-node green"></span>
+            <label className="legend-label">Start node</label>
+          </div>
+          <div className="legend-item">
+            <span className="legend-node red"></span>
+            <label className="legend-label">End node</label>
+          </div>
+          <div className="legend-item">
+            <span className="legend-node blue"></span>
+            <label className="legend-label">Wall</label>
+          </div>
+          <div className="legend-item">
+            <span className="legend-node grey"></span>
+            <label className="legend-label">Weight</label>
+          </div>
+        </div>
       </div>
-
-      <div className="menu_options">
-        <div>
-          <button
-            disabled={!visualizationRunning ? false : true}
-            onClick={handleResetGrid}
-          >
-            Reset Grid
-          </button>
+      <div className="menu">
+        <h3>Customize</h3>
+        <div className="grid-size-menu">
+          <label>Grid size</label>
+          <div className="size-slider">
+            <input
+              disabled={!visualizationRunning ? false : true}
+              onChange={changeGridSize}
+              id="size_slider"
+              type="range"
+              min={DEFAULT_GRID_SIZE}
+              max={MAX_GRID_SIZE}
+              defaultValue={DEFAULT_GRID_SIZE}
+            />
+            <label>
+              {gridSize}x{gridSize}
+            </label>
+          </div>
         </div>
-        <div>
-          <button
-            disabled={!visualizationRunning ? false : true}
-            onClick={randomizeGrid}
-          >
-            Random Grid
-          </button>
-        </div>
-        <div>
-          <input
-            disabled={!visualizationRunning ? false : true}
-            onChange={changeGridSize}
-            id="size_slider"
-            type="range"
-            min={DEFAULT_GRID_SIZE}
-            max={MAX_GRID_SIZE}
-            defaultValue={DEFAULT_GRID_SIZE}
-          />
-          <label htmlFor="size_slider">
-            {gridSize}x{gridSize}
+        <div className="algo-menu">
+          <label>
+            Algorithm
+            <div className="info-icon">
+              <FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>
+              <span className="tooltip-text-down">
+                <ol>
+                  <li>
+                    BFS, Dijkstra's and A* <b>guarantee</b> the shortest path
+                  </li>
+                  <li>
+                    DFS <b>does not guarantee</b> shortest path
+                  </li>
+                  <li>
+                    Dijkstra's and A* <b>require weights</b> (if no weights set,
+                    all weights cells default to weight of 1)
+                  </li>
+                  <li>
+                    Dijkstra's and A* regress to a BFS if uniform weights.
+                  </li>
+                </ol>
+              </span>
+            </div>
           </label>
-        </div>
-        <div>
           <select
             disabled={!visualizationRunning ? false : true}
             name="algo"
             id="algo"
             onChange={handleAlgoChange}
+            style={{ color: !visualizationRunning ? "white" : "grey" }}
           >
             {Object.keys(ALGOS).map((key, idx) => {
               return (
@@ -484,20 +557,22 @@ export const Grid = () => {
             })}
           </select>
         </div>
-        <div>
-          <button
-            disabled={!visualizationRunning ? false : true}
-            onClick={execAlgo}
-          >
-            {!visualizationRunning ? "Visualize It!" : "Running..."}
-          </button>
-        </div>
-        <div>
+        <div className="animation-menu">
+          <label>
+            Animation
+            <div className="info-icon">
+              <FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>
+              <span className="tooltip-text-right-animation">
+                Select an animation style for the pathfinding visualizer.
+              </span>
+            </div>
+          </label>
           <select
             disabled={!visualizationRunning ? false : true}
             name="animationType"
             id="animationType"
             onChange={handleAnimationType}
+            style={{ color: !visualizationRunning ? "white" : "grey" }}
           >
             {Object.keys(ANIMATION_TYPE).map((key, idx) => {
               return (
@@ -508,18 +583,40 @@ export const Grid = () => {
             })}
           </select>
         </div>
+        <div className="duration-menu">
+          <label>Duration</label>
+          <div className="duration-slider">
+            <input
+              disabled={!visualizationRunning ? false : true}
+              onChange={changeAnimationTime}
+              id="animation_time_slider"
+              type="range"
+              min={0}
+              max={10000}
+              defaultValue={animationTime}
+            />
+            <label>{Math.round((animationTime / 1000) * 2)} sec</label>
+          </div>
+        </div>
+
         <div>
-          <input
+          <button
+            className="visualize-button"
             disabled={!visualizationRunning ? false : true}
-            onChange={changeAnimationTime}
-            id="animation_time_slider"
-            type="range"
-            min={0}
-            max={10000}
-            defaultValue={animationTime}
-          />
-          <label htmlFor="animation_time_slider">
-            {Math.round((animationTime / 1000) * 2)} seconds
+            onClick={execAlgo}
+            style={{ color: !visualizationRunning ? "white" : "grey" }}
+          >
+            {!visualizationRunning ? "Start visualization" : "Running..."}
+          </button>
+        </div>
+        <div className="toggle-dark-mode">
+          <label className="dark-mode-label">
+            <input
+              className="dark-mode-checkbox"
+              type="checkbox"
+              onChange={handleDarkModeInputChange}
+            />
+            <span className="dark-mode-slider" />
           </label>
         </div>
       </div>

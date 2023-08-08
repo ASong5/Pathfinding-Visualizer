@@ -1,29 +1,323 @@
-.menu_options {
+.toggle-dark-mode {
   display: flex;
-  justify-content: center;
-  align-items: flex-end;
+  width: 200px;
 }
 
-.menu_options > div {
-  padding: 15px;
+.dark-mode-label {
+  position: absolute;
+  width: 15%;
+  height: 100px;
+  background-color: var(--light);
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+.dark-mode-checkbox {
+  position: absolute;
+  display: none;
+}
+
+.dark-mode-slider {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50px;
+  transition: 0.3s;
+  z-index: 1;
+}
+
+.dark-mode-checkbox:checked ~ .dark-mode-slider {
+  background-color: var(--dark);
+}
+
+.dark-mode-slider::before {
+  content: "";
+  position: absolute;
+  top: 13px;
+  left: 16px;
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  box-shadow: inset 28px -4px 0px 0px var(--dark);
+  background-color: var(--light);
+  transition: 0.3s;
+}
+
+.dark-mode-checkbox:checked ~ .dark-mode-slider::before {
+  transform: translateX(180px);
+  background-color: orange;
+  box-shadow: none;
+}
+
+.parent-container {
+  display: flex;
+  flex-direction: row;
+  gap: 420px;
+  /* gap:50px; */
+}
+
+.grid-container button,
+.grid-container select,
+.menu button,
+.menu select {
+  font-family: "inter";
+  background-color: #0d1117;
+  color: white;
+  border-radius: 10%;
+  border-color: grey;
+  border-width: px;
+  padding: 8px;
+}
+
+.algo-menu > select,
+.animation-menu > select {
+  width: 197px;
+}
+
+.info-icon {
+  padding-left: 10px;
+  background-color: inherit;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.menu label {
+  font-weight: 600;
+}
+
+.menu > h3 {
+  font-size: x-large;
+  font-weight: 600;
+}
+
+.size-slider {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+#size_slider,
+#animation_time_slider {
+  margin-left: 0px;
+  width: 210px;
+}
+
+.size-slider > label,
+.duration-slider > label {
+  font-weight: 400;
+}
+
+.size-slider > input,
+.duration-slider > input {
+  width: 125px;
+  color: black;
+}
+
+.size-slider > label {
+  margin-left: 18px;
+}
+
+.duration-slider > label {
+  margin-left: 17px;
+}
+
+.grid-caption {
+  display: flex;
+  margin-top: 30px;
+  gap: 485px;
+  font-weight: 600;
+}
+
+.info-icon {
+  position: relative;
+  display: inline-block;
+}
+
+.info-icon .tooltip-text-right {
+  visibility: hidden;
+  width: 300px;
+  text-align: left;
+  border-radius: 6px;
+  padding: 10px;
+  position: absolute;
+  z-index: 1;
+  top: -15px;
+  left: 130%;
+  font-size: small;
+  font-weight: 400;
+  background-color: white;
+  color: black;
+}
+
+.info-icon .tooltip-text-right-animation {
+  visibility: hidden;
+  width: 155px;
+  border-radius: 6px;
+  padding: 10px;
+  position: absolute;
+  z-index: 1;
+  top: -30px;
+  left: 135%;
+  font-size: small;
+  font-weight: 400;
+  background-color: white;
+  color: black;
+}
+
+.info-icon .tooltip-text-down {
+  visibility: hidden;
+  width: 260px;
+  border-radius: 6px;
+  padding: 5px 0px 5px 25px;
+  position: absolute;
+  z-index: 1;
+  top: 125%;
+  left: 50%;
+  margin-left: -90px;
+  font-size: small;
+  font-weight: 400;
+  text-align: left;
+  background-color: white;
+  color: black;
+}
+
+.info-icon .tooltip-text-down::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 33%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent white transparent;
+}
+
+.info-icon .tooltip-text-right-animation::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent white transparent transparent;
+}
+
+.info-icon .tooltip-text-right::after {
+  content: "";
+  position: absolute;
+  top: 39%;
+  right: 100%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent white transparent transparent;
+}
+
+.info-icon:hover .tooltip-text-right,
+.info-icon:hover .tooltip-text-right-animation,
+.info-icon:hover .tooltip-text-down {
+  visibility: visible;
+}
+
+ol {
+  padding-left: 0;
+}
+
+.grid-size-menu,
+.algo-menu,
+.animation-menu,
+.duration-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.grid-caption-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+}
+
+.random-button,
+.reset-button {
+  font-weight: 600;
+}
+
+.visualize-button {
+  background-color: #6966ff !important;
+  width: 285px;
+  font-weight: 600;
+}
+
+.legend {
+  display: flex;
+  flex-direction: row;
+  gap: 60px;
+  margin-top: 30px;
+  align-items: center;
+}
+
+.legend-label {
+  margin-left: 18px;
+  align-items: center;
+}
+
+.legend-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.legend-node {
+  height: 25px;
+  width: 25px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.legend-item > .green {
+  background-color: #5ef19b;
+}
+.legend-item > .red {
+  background-color: #fd686f;
+}
+.legend-item > .blue {
+  background-color: #87a9fc;
+}
+.legend-item > .grey {
+  background-color: #73757a;
+}
+
+.grid {
+  background-color: white;
 }
 
 .grid-container {
   display: flex;
-  justify-content: center;
   flex-direction: column;
-  align-items: center;
-  height: 100vh;
+  height: 100%;
   user-select: none;
   position: relative;
+  gap: 5px;
 }
 
 .grid {
   display: grid;
-  border: 1px solid black; 
+  border: 1px solid black;
   justify-content: center;
-  width: 90vh;
-  height: 90vh;
+  /* width: 90vh;
+  height: 90vh; */
+  width: 60vw;
+  height: 60vh;
   box-sizing: border-box;
 }
 
@@ -46,13 +340,27 @@
 }
 
 @keyframes visited-color-animation-fade {
-  0%{background-color: red;}
-  16%{background-color: red;}
-  33%{background-color: orange;}
-  50%{background-color: yellow;}
-  66%{background-color: green;}
-  83%{background-color: blue;}
-  100%{background-color: violet;}
+  0% {
+    background-color: red;
+  }
+  16% {
+    background-color: red;
+  }
+  33% {
+    background-color: orange;
+  }
+  50% {
+    background-color: yellow;
+  }
+  66% {
+    background-color: green;
+  }
+  83% {
+    background-color: blue;
+  }
+  100% {
+    background-color: violet;
+  }
 }
 
 @keyframes visited-color-animation-swarm {
