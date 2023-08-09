@@ -5,81 +5,83 @@
   --link-hover: rgb(24, 94, 82);
 }
 
-.link{
+@media only screen and (max-width: 1357px) {
+  .heading h3{
+    font-size: 1rem;
+  }
+  .sub-heading h1{
+    font-size: 1.5rem;
+  }
+}
+
+
+.link {
   text-decoration: none;
 }
 
-.link:visited{
+.link:visited {
   color: white;
 }
 
-.link:hover{
-  color: #8AB4F8;
+.link:hover {
+  color: #8ab4f8;
   text-decoration: underline;
 }
-
 
 .App {
   display: flex;
   flex-direction: column;
+  
 }
 
-.body-header {
+.app-container {
   display: flex;
   flex-direction: column;
-  width: 98%;
-  margin-left: 20px;
+  margin: 0vh 10.5vw 0vh 10.5vw;
 }
 
 .heading {
   display: flex;
   flex-direction: row;
-  
-  width: 100%;
-  gap: 87%;
-  white-space: nowrap;
+  flex-basis: 2rem;
+  justify-content: space-between;
 }
 
 .sub-heading {
-  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-
 }
 
-h1,
-h3 {
+.sub-heading  h1,
+.heading h3 {
   font-weight: 600;
   margin: 0;
 }
 
-h3 {
-  margin-top: 20px;
-  margin-bottom: 20px;
+.heading  h3,
+.gh-logo,
+.dark-gh-logo {
+  margin-top: 1.2rem;
+  margin-bottom: 1.2rem;
 }
 
-h1 {
-  font-size: 2.5em;
+.heading h3 {
+  margin-top: 1.2rem;
 }
 
-.logo-container{
-  display: flex;
-  align-self: flex-end;
+.gh-logo,
+.dark-gh-logo {
+  height: 0;
+  min-height: 60%;
+  max-height: 80%;
 }
 
-.logo,
-.dark-logo {
-  max-width: 42px;
-  flex-shrink: 0;
-}
-
-.dark-logo {
+.dark-gh-logo {
   filter: invert(100%) !important;
 }
 
 .dark-mode {
-  background-color: #0D1117;
+  background-color: #0d1117;
   color: white;
 }
 
@@ -87,4 +89,3 @@ h1 {
   background-color: white;
   color: black;
 }
-

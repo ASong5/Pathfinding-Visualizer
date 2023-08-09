@@ -10,10 +10,10 @@ const Node = (props) => {
     isShortest,
     onClick,
     onMouseEnter,
-    gridSize,
     weight,
     setAnimationCount,
     animationType,
+    isDarkMode
   } = props;
 
   let classes = "node";
@@ -75,11 +75,11 @@ const Node = (props) => {
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       style={{
-        width: `calc(60vw / ${gridSize})`,
-        height: `calc(60vh / ${gridSize})`,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+        border: `${isDarkMode ? "1px solid teal" : "1px solid #0D1117"}`
+        // width: `calc(60vw / ${gridSize})`,
+        // height: `calc(60vh / ${gridSize})`,
+        // justifyContent: "center",
+        // alignItems: "center",
       }}
     >
       {weight > 0 ? `${weight}` : ""}

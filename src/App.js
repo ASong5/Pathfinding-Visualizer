@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 import { Grid } from "./Grid";
 
 const path = process.env.PUBLIC_URL;
@@ -17,18 +19,33 @@ function App() {
   });
 
   return (
-    <div className={`App ${isDarkMode}`}>
-      <div className="body-header">
+    <div className={"App"}>
+      <div className="app-container">
         <div className="heading">
-          <h3>Pathfinding Visualizer</h3>
-          <div className="logo-container">
-            <a href="https://github.com/ASong5">
-              <img
-                className={isDarkMode ? "dark-logo" : "logo"}
-                src={path + logo}
-              ></img>
-            </a>
-          </div>
+          <h3>
+            Pathfinding Visualizer{" "}
+            <span
+              onClick={handleDarkModeInputChange}
+              style={{ cursor: "pointer", marginLeft: "0.5rem" }}
+              hidden={isDarkMode ? false : true}
+            > 
+              <FontAwesomeIcon icon={faSun} color="orange"></FontAwesomeIcon>
+            </span>
+            <span
+              onClick={handleDarkModeInputChange}
+              style={{ cursor: "pointer", marginLeft: "0.5rem" }}
+              hidden={isDarkMode ? true : false}
+            >
+              <FontAwesomeIcon icon={faMoon} color="black"></FontAwesomeIcon>
+            </span>
+          </h3>
+
+          <a href="https://github.com/ASong5">
+            <img
+              className={isDarkMode ? "dark-gh-logo" : "gh-logo"}
+              src={path + logo}
+            ></img>
+          </a>
         </div>
         <div className="sub-heading">
           <h1 style={{ color: "grey" }}>
@@ -38,7 +55,7 @@ function App() {
               <a
                 className="link"
                 href="https://en.wikipedia.org/wiki/Pathfinding"
-                style={{color: isDarkMode ? "white" : "black"}}
+                style={{ color: isDarkMode ? "white" : "black" }}
               >
                 pathfinding algorithms
               </a>
@@ -48,12 +65,9 @@ function App() {
             and unweighted graphs.
           </h1>
         </div>
-        <div>
-          <Grid
-            handleDarkModeInputChange={handleDarkModeInputChange}
-            isDarkMode={isDarkMode}
-          ></Grid>
-        </div>
+        <Grid
+          isDarkMode={isDarkMode}
+        ></Grid>
       </div>
     </div>
   );

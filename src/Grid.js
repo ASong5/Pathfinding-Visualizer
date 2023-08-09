@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Node from "./Node";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { faInfoCircle} from "@fortawesome/free-solid-svg-icons";
 import { runAlgo } from "./utils/algorithms";
 import "./Grid.css";
 
@@ -66,7 +66,7 @@ const resizeGrid = (grid, newGridSize) => {
   return [newGrid, isStart, isEnd];
 };
 
-export const Grid = ({handleDarkModeInputChange}) => {
+export const Grid = ({isDarkMode}) => {
   const [grid, setGrid] = useState(createEmptyGrid(DEFAULT_GRID_SIZE));
   const [gridSize, setGridSize] = useState(DEFAULT_GRID_SIZE);
   const [isMouseDown, setIsMouseDown] = useState(false);
@@ -408,6 +408,7 @@ export const Grid = ({handleDarkModeInputChange}) => {
         onMouseUp={handleMouseUp}
       >
         <div className="grid-caption">
+          <div className="caption-text">
           <p>
             Click two cells to set a{" "}
             <span style={{ color: "#5ef19b" }}>start</span> and{" "}
@@ -427,6 +428,7 @@ export const Grid = ({handleDarkModeInputChange}) => {
               </span>
             </span>
           </p>
+          </div>
           <div className="grid-caption-buttons">
             <div>
               <button
@@ -453,16 +455,16 @@ export const Grid = ({handleDarkModeInputChange}) => {
         <div
           className="grid"
           style={{
-            gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
-            gridTemplateRows: `repeat(${gridSize}, 1fr)`,
+            // gridTemplateColumns: `repeat(auto-fill, minmax(65px, 1fr))`,
+            backgroundColor: `${isDarkMode ? "#0D1117" : "white"}`,
             pointerEvents: `${!visualizationRunning ? "auto" : "none"}`,
           }}
         >
           {grid.map((row, rowIndex) => (
-            <div key={rowIndex} className="row">
+            <div className="row" key={rowIndex}>
               {row.map((node, colIndex) => (
                 <Node
-                  key={rowIndex - colIndex}
+                  key={rowIndex * gridSize + colIndex} // Change the key calculation
                   start={node.isStart}
                   end={node.isEnd}
                   gridSize={gridSize}
@@ -474,6 +476,7 @@ export const Grid = ({handleDarkModeInputChange}) => {
                   animationType={animationType}
                   onClick={() => handleNodeClick(rowIndex, colIndex)}
                   onMouseEnter={() => handleNodeDrag(rowIndex, colIndex)}
+                  isDarkMode={isDarkMode}
                 />
               ))}
             </div>
@@ -608,16 +611,6 @@ export const Grid = ({handleDarkModeInputChange}) => {
           >
             {!visualizationRunning ? "Start visualization" : "Running..."}
           </button>
-        </div>
-        <div className="toggle-dark-mode">
-          <label className="dark-mode-label">
-            <input
-              className="dark-mode-checkbox"
-              type="checkbox"
-              onChange={handleDarkModeInputChange}
-            />
-            <span className="dark-mode-slider" />
-          </label>
         </div>
       </div>
     </div>
