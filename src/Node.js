@@ -79,7 +79,7 @@ const Node = (props) => {
       onMouseEnter={onMouseEnter}
       style={{
         border: `${isDarkMode ? "1px solid teal" : "1px solid #0D1117"}`,
-        backgroundImage: isWall ? `url(${path + logo})` : "",
+        // backgroundImage: isWall ? `url(${path + logo})` : "",
       }}
     >
       <div style={{ position: "relative", width: "100%", height: "100%" }}>
