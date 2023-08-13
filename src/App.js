@@ -28,7 +28,7 @@ function App() {
               onClick={handleDarkModeInputChange}
               style={{ cursor: "pointer", marginLeft: "0.5rem" }}
               hidden={isDarkMode ? false : true}
-            > 
+            >
               <FontAwesomeIcon icon={faSun} color="orange"></FontAwesomeIcon>
             </span>
             <span
@@ -65,9 +65,7 @@ function App() {
             and unweighted graphs.
           </h1>
         </div>
-        <Grid
-          isDarkMode={isDarkMode}
-        ></Grid>
+        <Grid isDarkMode={isDarkMode}></Grid>
       </div>
     </div>
   );

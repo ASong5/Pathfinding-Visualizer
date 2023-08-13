@@ -1,6 +1,9 @@
 import React, { useRef, useEffect } from "react";
 import { ANIMATION_TYPE } from "./Grid";
 
+const path = process.env.PUBLIC_URL;
+const logo = "/images/wall-texture.png";
+
 const Node = (props) => {
   const {
     start,
@@ -13,7 +16,7 @@ const Node = (props) => {
     weight,
     setAnimationCount,
     animationType,
-    isDarkMode
+    isDarkMode,
   } = props;
 
   let classes = "node";
@@ -75,14 +78,23 @@ const Node = (props) => {
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       style={{
-        border: `${isDarkMode ? "1px solid teal" : "1px solid #0D1117"}`
-        // width: `calc(60vw / ${gridSize})`,
-        // height: `calc(60vh / ${gridSize})`,
-        // justifyContent: "center",
-        // alignItems: "center",
+        border: `${isDarkMode ? "1px solid teal" : "1px solid #0D1117"}`,
+        backgroundImage: isWall ? `url(${path + logo})` : "",
       }}
     >
-      {weight > 0 ? `${weight}` : ""}
+      <div style={{ position: "relative", width: "100%", height: "100%" }}>
+        <div
+          style={{
+            position: "absolute",
+            fontSize: "8pt",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          <p style={{fontSize: "1em",}}>{weight > 0 ? `${weight}` : ""}</p>
+        </div>
+      </div>
     </div>
   );
 };

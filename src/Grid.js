@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Node from "./Node";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfoCircle} from "@fortawesome/free-solid-svg-icons";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { runAlgo } from "./utils/algorithms";
 import "./Grid.css";
 
@@ -66,19 +66,21 @@ const resizeGrid = (grid, newGridSize) => {
   return [newGrid, isStart, isEnd];
 };
 
-export const Grid = ({isDarkMode}) => {
+export const Grid = ({ isDarkMode }) => {
   const [grid, setGrid] = useState(createEmptyGrid(DEFAULT_GRID_SIZE));
   const [gridSize, setGridSize] = useState(DEFAULT_GRID_SIZE);
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [startNode, setStartNode] = useState(null);
   const [endNode, setEndNode] = useState(null);
   const [visualizationRunning, setVisualizationRunning] = useState(false);
+  const [path, setPath] = useState(null);
   const [algo, setAlgo] = useState(ALGOS.bfs);
   const [animationTime, setAnimationTime] = useState(2000);
   const [animationCount, setAnimationCount] = useState(0);
   const [animationType, setAnimationType] = useState(ANIMATION_TYPE.swarm);
-  const [cachedPath, setCachedPath] = useState(
+  const [cachedVisited, setCachedVisited] = useState(
     Array.from({ length: Object.keys(ALGOS).length }, () => ({
+      visited: [],
       path: [],
       failedPrevious: false,
     }))
@@ -87,8 +89,8 @@ export const Grid = ({isDarkMode}) => {
   useEffect(() => {
     const execShortestPath = async () => {
       if (algo !== ALGOS.dfs) {
-        if (animationCount === cachedPath[algo].path.length - 2) {
-          await visualizeShortestPath();
+        if (animationCount === cachedVisited[algo].visited.length - 2) {
+          await visualizeShortestPath(cachedVisited[algo].path);
           setAnimationCount(0);
           setVisualizationRunning(false);
         }
@@ -126,6 +128,7 @@ export const Grid = ({isDarkMode}) => {
         setEndNode(null);
       } else {
         newGrid[row][col].isWall = !newGrid[row][col].isWall;
+        newGrid[row][col].weight = 0;
       }
     } else if (!startNode) {
       if (newGrid[row][col].isEnd) {
@@ -146,8 +149,9 @@ export const Grid = ({isDarkMode}) => {
         setEndNode([row, col]);
       }
     }
-    setCachedPath(
+    setCachedVisited(
       Array.from({ length: Object.keys(ALGOS).length }, () => ({
+        visited: [],
         path: [],
         failedPrevious: false,
       }))
@@ -158,9 +162,13 @@ export const Grid = ({isDarkMode}) => {
   const handleNodeDrag = (row, col) => {
     if (isMouseDown && startNode && endNode) {
       const newGrid = [...grid];
-      newGrid[row][col].isWall = !newGrid[row][col].isWall;
-      setCachedPath(
+      if (!newGrid[row][col].isStart && !newGrid[row][col].isEnd){
+        newGrid[row][col].isWall = !newGrid[row][col].isWall;
+        newGrid[row][col].weight = 0;
+      }
+      setCachedVisited(
         Array.from({ length: Object.keys(ALGOS).length }, () => ({
+          visited: [],
           path: [],
           failedPrevious: false,
         }))
@@ -179,8 +187,9 @@ export const Grid = ({isDarkMode}) => {
 
   const handleResetGrid = () => {
     setGrid(createEmptyGrid(gridSize));
-    setCachedPath(
+    setCachedVisited(
       Array.from({ length: Object.keys(ALGOS).length }, () => ({
+        visited: [],
         path: [],
         failedPrevious: false,
       }))
@@ -247,8 +256,9 @@ export const Grid = ({isDarkMode}) => {
 
   const changeGridSize = (e) => {
     setGridSize(parseInt(e.target.value));
-    setCachedPath(
+    setCachedVisited(
       Array.from({ length: Object.keys(ALGOS).length }, () => ({
+        visited: [],
         path: [],
         failedPrevious: false,
       }))
@@ -297,13 +307,16 @@ export const Grid = ({isDarkMode}) => {
         newGrid[row][col].isWall = true;
         numWalls++;
       }
+      if (!newGrid[row][col].isStart && !newGrid[row][col].isEnd && !newGrid[row][col].isWall)
+        newGrid[row][col].weight = Math.round(Math.random() * 10);
     }
 
     setStartNode([startX, startY]);
     setEndNode([endX, endY]);
     setGrid(newGrid);
-    setCachedPath(
+    setCachedVisited(
       Array.from({ length: Object.keys(ALGOS).length }, () => ({
+        visited: [],
         path: [],
         failedPrevious: false,
       }))
@@ -313,33 +326,32 @@ export const Grid = ({isDarkMode}) => {
   const execAlgo = async () => {
     if (!visualizationRunning) {
       if (startNode && endNode) {
-        let visited = [];
         if (
-          cachedPath[algo].path.length === 0 &&
-          !cachedPath[algo].failedPrevious
+          cachedVisited[algo].visited.length === 0 &&
+          !cachedVisited[algo].failedPrevious
         ) {
-          let success = runAlgo(
-            algo,
-            grid,
-            gridSize,
-            startNode,
-            endNode,
-            visited
-          );
-          let newCachedPath = [...cachedPath];
-          if (success) {
-            await visualizeVisited(visited);
-            newCachedPath[algo].path = visited;
-            setCachedPath(newCachedPath);
+          let result = runAlgo(algo, grid, gridSize, startNode, endNode);
+          let newCachedVisited = [...cachedVisited];
+          if (result.success) {
+            if (algo === ALGOS.dfs) {
+              newCachedVisited[algo].visited = result.shortestPath;
+              await visualizeVisited(result.shortestPath);
+            } else {
+              newCachedVisited[algo].visited = result.visited;
+              newCachedVisited[algo].path = result.shortestPath;
+              await visualizeVisited(result.visited);
+            }
+            setPath(result.shortestPath);
+            setCachedVisited(newCachedVisited);
           } else {
-            newCachedPath[algo].failedPrevious = true;
-            setCachedPath(newCachedPath);
+            newCachedVisited[algo].failedPrevious = true;
+            setCachedVisited(newCachedVisited);
             alert("No path found.");
           }
-        } else if (cachedPath[algo].failedPrevious) {
+        } else if (cachedVisited[algo].failedPrevious) {
           alert("No path found.");
         } else {
-          await visualizeVisited(cachedPath[algo].path);
+          await visualizeVisited(cachedVisited[algo].visited);
         }
         if (algo === ALGOS.dfs) setVisualizationRunning(false);
       } else {
@@ -375,15 +387,7 @@ export const Grid = ({isDarkMode}) => {
     });
   };
 
-  const visualizeShortestPath = () => {
-    let currentNode = endNode;
-    const path = [];
-
-    while (currentNode[0] !== startNode[0] || currentNode[1] !== startNode[1]) {
-      path.unshift(currentNode);
-      currentNode = grid[currentNode[0]][currentNode[1]].parent;
-      if (!currentNode) break;
-    }
+  const visualizeShortestPath = (path) => {
     return new Promise((resolve) => {
       path.forEach((node, index) => {
         setTimeout(() => {
@@ -409,25 +413,25 @@ export const Grid = ({isDarkMode}) => {
       >
         <div className="grid-caption">
           <div className="caption-text">
-          <p>
-            Click two cells to set a{" "}
-            <span style={{ color: "#5ef19b" }}>start</span> and{" "}
-            <span style={{ color: "#fd686f" }}>end</span> node, respectively.
-            <span className="info-icon">
-              <FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>
-              <span className="tooltip-text-right">
-                Click on or drag your over cells to <b>draw walls</b> (
-                <span style={{ color: "#5ef19b", fontWeight: "1000" }}>
-                  start
-                </span>{" "}
-                and{" "}
-                <span style={{ color: "#fd686f", fontWeight: "1000" }}>
-                  end
-                </span>{" "}
-                nodes must be set first).
+            <p>
+              Click two cells to set a{" "}
+              <span style={{ color: "#5ef19b" }}>start</span> and{" "}
+              <span style={{ color: "#fd686f" }}>end</span> node, respectively.
+              <span className="info-icon">
+                <FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>
+                <span className="tooltip-text-right">
+                  Click on or drag your mouse over cells to <b>draw walls</b> (
+                  <span style={{ color: "#5ef19b", fontWeight: "1000" }}>
+                    start
+                  </span>{" "}
+                  and{" "}
+                  <span style={{ color: "#fd686f", fontWeight: "1000" }}>
+                    end
+                  </span>{" "}
+                  nodes must be set first).
+                </span>
               </span>
-            </span>
-          </p>
+            </p>
           </div>
           <div className="grid-caption-buttons">
             <div>
@@ -571,7 +575,9 @@ export const Grid = ({isDarkMode}) => {
             </div>
           </label>
           <select
-            disabled={!visualizationRunning ? false : true}
+            disabled={
+              !visualizationRunning && algo !== ALGOS.dfs ? false : true
+            }
             name="animationType"
             id="animationType"
             onChange={handleAnimationType}
@@ -605,7 +611,9 @@ export const Grid = ({isDarkMode}) => {
         <div>
           <button
             className="visualize-button"
-            disabled={!visualizationRunning ? false : true}
+            disabled={
+              !visualizationRunning && startNode && endNode ? false : true
+            }
             onClick={execAlgo}
             style={{ color: !visualizationRunning ? "white" : "grey" }}
           >
