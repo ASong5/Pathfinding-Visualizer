@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/Pathfinding-Visualizer/static/css/main.fc8a4c4f.css",
-    "main.js": "/Pathfinding-Visualizer/static/js/main.6aadb9ea.js",
+    "main.css": "/Pathfinding-Visualizer/static/css/main.4caff53d.css",
+    "main.js": "/Pathfinding-Visualizer/static/js/main.24e8015a.js",
     "static/js/787.1e945c16.chunk.js": "/Pathfinding-Visualizer/static/js/787.1e945c16.chunk.js",
     "index.html": "/Pathfinding-Visualizer/index.html",
-    "main.fc8a4c4f.css.map": "/Pathfinding-Visualizer/static/css/main.fc8a4c4f.css.map",
-    "main.6aadb9ea.js.map": "/Pathfinding-Visualizer/static/js/main.6aadb9ea.js.map",
+    "main.4caff53d.css.map": "/Pathfinding-Visualizer/static/css/main.4caff53d.css.map",
+    "main.24e8015a.js.map": "/Pathfinding-Visualizer/static/js/main.24e8015a.js.map",
     "787.1e945c16.chunk.js.map": "/Pathfinding-Visualizer/static/js/787.1e945c16.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.fc8a4c4f.css",
-    "static/js/main.6aadb9ea.js"
+    "static/css/main.4caff53d.css",
+    "static/js/main.24e8015a.js"
   ]
 }
