@@ -172,13 +172,14 @@ const execDijkstras = (grid, gridLength, startNode, endNode) => {
     // update neighbour's shortest distance in nodeMap
     for (const [key, val] of neighbourDistances) {
       let oldNodeDistance = nodeMap.get(key).distance;
-      let newNodeDistance = val + nodeMap.get(JSON.stringify(currNode)).distance;
-      if (newNodeDistance < oldNodeDistance) {
+      let newNodeDistance =
+        val + nodeMap.get(JSON.stringify(currNode)).distance;
+      if (newNodeDistance <= oldNodeDistance) {
+        nodeMap.set(key, {
+          distance: newNodeDistance,
+          prev: currNode,
+        });
       }
-      nodeMap.set(key, {
-        distance: newNodeDistance,
-        prev: currNode,
-      });
     }
 
     visited.push(currNode);
@@ -187,7 +188,6 @@ const execDijkstras = (grid, gridLength, startNode, endNode) => {
       let nodeInPath = endNode;
       while (nodeInPath[0] !== startNode[0] || nodeInPath[1] !== startNode[1]) {
         path.push(nodeInPath);
-        // TODO: figure out why path is messed up
         nodeInPath = nodeMap.get(JSON.stringify(nodeInPath)).prev;
       }
       return { success: true, visited: visited, shortestPath: path.reverse() };

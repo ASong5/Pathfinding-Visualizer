@@ -92,7 +92,7 @@ const Node = (props) => {
             transform: "translate(-50%, -50%)",
           }}
         >
-          <p style={{fontSize: "1em",}}>{weight > 0 ? `${weight}` : ""}</p>
+          {weight > 0 ? `${weight}` : ""}
         </div>
       </div>
     </div>

@@ -220,7 +220,7 @@ export const Grid = ({ isDarkMode }) => {
       case "dijkstra":
         algo = ALGOS.dijkstra;
         break;
-      case "A*":
+      case "aStar":
         algo = ALGOS.aStar;
         break;
       default:
@@ -307,8 +307,11 @@ export const Grid = ({ isDarkMode }) => {
         newGrid[row][col].isWall = true;
         numWalls++;
       }
+    }
+    for(let i = 0; i < cellsToSetWall.length; i++){
+      const [row, col] = cellsToSetWall[i];
       if (!newGrid[row][col].isStart && !newGrid[row][col].isEnd && !newGrid[row][col].isWall)
-        newGrid[row][col].weight = Math.round(Math.random() * 10);
+        newGrid[row][col].weight = Math.ceil(Math.random() * 10);
     }
 
     setStartNode([startX, startY]);
@@ -475,7 +478,7 @@ export const Grid = ({ isDarkMode }) => {
                   isWall={node.isWall}
                   isVisited={node.isVisited}
                   isShortest={node.isShortest}
-                  weight={node.weight}
+                  weight={algo === ALGOS.aStar || algo === ALGOS.dijkstra ? node.weight : 0}
                   setAnimationCount={setAnimationCount}
                   animationType={animationType}
                   onClick={() => handleNodeClick(rowIndex, colIndex)}
