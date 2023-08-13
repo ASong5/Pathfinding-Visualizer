@@ -60,6 +60,8 @@ const resizeGrid = (grid, newGridSize) => {
         newGrid[row][col].isEnd = true;
         isEnd = true;
       } else if (grid[row][col].isWall) newGrid[row][col].isWall = true;
+      else if (grid[row][col].weight > 0)
+        newGrid[row][col].weight = grid[row][col].weight;
     }
   }
 
@@ -73,7 +75,6 @@ export const Grid = ({ isDarkMode }) => {
   const [startNode, setStartNode] = useState(null);
   const [endNode, setEndNode] = useState(null);
   const [visualizationRunning, setVisualizationRunning] = useState(false);
-  const [path, setPath] = useState(null);
   const [algo, setAlgo] = useState(ALGOS.bfs);
   const [animationTime, setAnimationTime] = useState(2000);
   const [animationCount, setAnimationCount] = useState(0);
@@ -85,6 +86,16 @@ export const Grid = ({ isDarkMode }) => {
       failedPrevious: false,
     }))
   );
+
+  useEffect(() => {
+    document.documentElement.style.setProperty(
+      "--animationTime",
+      `${animationTime / 2000}s`
+    );
+
+    const gridContainer = document.querySelector(".grid-container");
+    gridContainer.addEventListener("animationend", handleAnimationEnd);
+  }, []);
 
   useEffect(() => {
     const execShortestPath = async () => {
@@ -100,13 +111,6 @@ export const Grid = ({ isDarkMode }) => {
   }, [animationCount]);
 
   useEffect(() => {
-    document.documentElement.style.setProperty(
-      "--animationTime",
-      `${animationTime / 2000}s`
-    );
-  }, []);
-
-  useEffect(() => {
     let newGridProps = resizeGrid(grid, gridSize);
     setGrid(newGridProps[0]);
     if (!newGridProps[1]) setStartNode(null);
@@ -117,6 +121,15 @@ export const Grid = ({ isDarkMode }) => {
     if (!visualizationRunning) resetVisualization();
   }, [visualizationRunning]);
 
+  const handleAnimationEnd = (e) => {
+    if (
+      e.target.classList.contains("visited-swarm") ||
+      e.target.classList.contains("visited-fade")
+    ) {
+      setAnimationCount((prev) => prev + 1);
+    }
+  };
+  
   const handleNodeClick = (row, col) => {
     const newGrid = [...grid];
     if (startNode && endNode) {
@@ -162,7 +175,7 @@ export const Grid = ({ isDarkMode }) => {
   const handleNodeDrag = (row, col) => {
     if (isMouseDown && startNode && endNode) {
       const newGrid = [...grid];
-      if (!newGrid[row][col].isStart && !newGrid[row][col].isEnd){
+      if (!newGrid[row][col].isStart && !newGrid[row][col].isEnd) {
         newGrid[row][col].isWall = !newGrid[row][col].isWall;
         newGrid[row][col].weight = 0;
       }
@@ -308,9 +321,13 @@ export const Grid = ({ isDarkMode }) => {
         numWalls++;
       }
     }
-    for(let i = 0; i < cellsToSetWall.length; i++){
+    for (let i = 0; i < cellsToSetWall.length; i++) {
       const [row, col] = cellsToSetWall[i];
-      if (!newGrid[row][col].isStart && !newGrid[row][col].isEnd && !newGrid[row][col].isWall)
+      if (
+        !newGrid[row][col].isStart &&
+        !newGrid[row][col].isEnd &&
+        !newGrid[row][col].isWall
+      )
         newGrid[row][col].weight = Math.ceil(Math.random() * 10);
     }
 
@@ -344,7 +361,6 @@ export const Grid = ({ isDarkMode }) => {
               newCachedVisited[algo].path = result.shortestPath;
               await visualizeVisited(result.visited);
             }
-            setPath(result.shortestPath);
             setCachedVisited(newCachedVisited);
           } else {
             newCachedVisited[algo].failedPrevious = true;
@@ -478,7 +494,11 @@ export const Grid = ({ isDarkMode }) => {
                   isWall={node.isWall}
                   isVisited={node.isVisited}
                   isShortest={node.isShortest}
-                  weight={algo === ALGOS.aStar || algo === ALGOS.dijkstra ? node.weight : 0}
+                  weight={
+                    algo === ALGOS.aStar || algo === ALGOS.dijkstra
+                      ? node.weight
+                      : 0
+                  }
                   setAnimationCount={setAnimationCount}
                   animationType={animationType}
                   onClick={() => handleNodeClick(rowIndex, colIndex)}
