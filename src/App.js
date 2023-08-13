@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
-import { Grid, MemoizedGrid } from "./Grid";
+import { Grid } from "./Grid";
 
 const path = process.env.PUBLIC_URL;
 const logo = "/images/github-mark.png";
@@ -65,7 +65,7 @@ function App() {
             and unweighted graphs.
           </h1>
         </div>
-        <MemoizedGrid isDarkMode={isDarkMode}></MemoizedGrid>
+        <Grid isDarkMode={isDarkMode}></Grid>
       </div>
     </div>
   );

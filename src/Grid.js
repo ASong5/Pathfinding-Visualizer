@@ -65,13 +65,15 @@ const resizeGrid = (grid, newGridSize) => {
 
   return [newGrid, isStart, isEnd];
 };
-const Grid = ({ isDarkMode }) => {
+
+export const Grid = ({ isDarkMode }) => {
   const [grid, setGrid] = useState(createEmptyGrid(DEFAULT_GRID_SIZE));
   const [gridSize, setGridSize] = useState(DEFAULT_GRID_SIZE);
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [startNode, setStartNode] = useState(null);
   const [endNode, setEndNode] = useState(null);
   const [visualizationRunning, setVisualizationRunning] = useState(false);
+  const [path, setPath] = useState(null);
   const [algo, setAlgo] = useState(ALGOS.bfs);
   const [animationTime, setAnimationTime] = useState(2000);
   const [animationCount, setAnimationCount] = useState(0);
@@ -160,7 +162,7 @@ const Grid = ({ isDarkMode }) => {
   const handleNodeDrag = (row, col) => {
     if (isMouseDown && startNode && endNode) {
       const newGrid = [...grid];
-      if (!newGrid[row][col].isStart && !newGrid[row][col].isEnd) {
+      if (!newGrid[row][col].isStart && !newGrid[row][col].isEnd){
         newGrid[row][col].isWall = !newGrid[row][col].isWall;
         newGrid[row][col].weight = 0;
       }
@@ -306,13 +308,9 @@ const Grid = ({ isDarkMode }) => {
         numWalls++;
       }
     }
-    for (let i = 0; i < cellsToSetWall.length; i++) {
+    for(let i = 0; i < cellsToSetWall.length; i++){
       const [row, col] = cellsToSetWall[i];
-      if (
-        !newGrid[row][col].isStart &&
-        !newGrid[row][col].isEnd &&
-        !newGrid[row][col].isWall
-      )
+      if (!newGrid[row][col].isStart && !newGrid[row][col].isEnd && !newGrid[row][col].isWall)
         newGrid[row][col].weight = Math.ceil(Math.random() * 10);
     }
 
@@ -346,6 +344,7 @@ const Grid = ({ isDarkMode }) => {
               newCachedVisited[algo].path = result.shortestPath;
               await visualizeVisited(result.visited);
             }
+            setPath(result.shortestPath);
             setCachedVisited(newCachedVisited);
           } else {
             newCachedVisited[algo].failedPrevious = true;
@@ -479,11 +478,7 @@ const Grid = ({ isDarkMode }) => {
                   isWall={node.isWall}
                   isVisited={node.isVisited}
                   isShortest={node.isShortest}
-                  weight={
-                    algo === ALGOS.aStar || algo === ALGOS.dijkstra
-                      ? node.weight
-                      : 0
-                  }
+                  weight={algo === ALGOS.aStar || algo === ALGOS.dijkstra ? node.weight : 0}
                   setAnimationCount={setAnimationCount}
                   animationType={animationType}
                   onClick={() => handleNodeClick(rowIndex, colIndex)}
@@ -632,7 +627,5 @@ const Grid = ({ isDarkMode }) => {
     </div>
   );
 };
-
-export const MemoizedGrid = React.memo(Grid);
 
 export { ALGOS, ANIMATION_TYPE };
