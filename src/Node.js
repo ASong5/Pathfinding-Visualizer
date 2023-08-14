@@ -14,6 +14,7 @@ const Node = (props) => {
     onClick,
     onMouseEnter,
     weight,
+    setAnimationCount,
     animationType,
     isDarkMode,
   } = props;
@@ -35,6 +36,15 @@ const Node = (props) => {
         : "";
   }
 
+  const containerStyle = {
+    border: `${isDarkMode ? "1px solid teal" : "1px solid #0D1117"}`,
+    backgroundImage: isWall ? `url(${path + logo})` : "",
+    position: "relative",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  };
+
   return (
     <div
       className={classes}
@@ -43,10 +53,24 @@ const Node = (props) => {
       style={{
         border: `${isDarkMode ? "1px solid teal" : "1px solid #0D1117"}`,
         backgroundImage: isWall ? `url(${path + logo})` : "",
-        textAlign: "center",
+        position: "relative",
       }}
     >
-      {weight > 0 ? `${weight}` : ""}
+      <div>
+        {weight > 0 && (
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              fontSize: "12px"
+            }}
+          >
+            {weight}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

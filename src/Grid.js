@@ -8,7 +8,7 @@ import "./Grid.css";
 const DEFAULT_GRID_SIZE = 10; // square root of total grid size;
 const MAX_GRID_SIZE = 50;
 const ALGOS = { bfs: 0, dfs: 1, dijkstra: 2, aStar: 3 };
-const ANIMATION_TYPE = { swarm: 0, fade: 1 };
+const ANIMATION_TYPE = { fade: 0, swarm: 1 };
 
 const algoToString = (algo) => {
   let algoString = "";
@@ -150,6 +150,7 @@ export const Grid = ({ isDarkMode }) => {
       } else {
         newGrid[row][col].isStart = true;
         newGrid[row][col].isWall = false;
+        newGrid[row][col].weight = 0;
         setStartNode([row, col]);
       }
     } else if (!endNode) {
@@ -159,6 +160,7 @@ export const Grid = ({ isDarkMode }) => {
       } else {
         newGrid[row][col].isEnd = true;
         newGrid[row][col].isWall = false;
+        newGrid[row][col].weight = 0;
         setEndNode([row, col]);
       }
     }
@@ -478,7 +480,6 @@ export const Grid = ({ isDarkMode }) => {
         <div
           className="grid"
           style={{
-            // gridTemplateColumns: `repeat(auto-fill, minmax(65px, 1fr))`,
             backgroundColor: `${isDarkMode ? "#0D1117" : "white"}`,
             pointerEvents: `${!visualizationRunning ? "auto" : "none"}`,
           }}
@@ -487,7 +488,7 @@ export const Grid = ({ isDarkMode }) => {
             <div className="row" key={rowIndex}>
               {row.map((node, colIndex) => (
                 <Node
-                  key={rowIndex * gridSize + colIndex} // Change the key calculation
+                  key={rowIndex * gridSize + colIndex}
                   start={node.isStart}
                   end={node.isEnd}
                   gridSize={gridSize}
