@@ -36,15 +36,6 @@ const Node = (props) => {
         : "";
   }
 
-  const containerStyle = {
-    border: `${isDarkMode ? "1px solid teal" : "1px solid #0D1117"}`,
-    backgroundImage: isWall ? `url(${path + logo})` : "",
-    position: "relative",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  };
-
   return (
     <div
       className={classes}

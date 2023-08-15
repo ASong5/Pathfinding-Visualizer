@@ -75,6 +75,7 @@ export const Grid = ({ isDarkMode }) => {
   const [startNode, setStartNode] = useState(null);
   const [endNode, setEndNode] = useState(null);
   const [visualizationRunning, setVisualizationRunning] = useState(false);
+  const [isComputing, setIsComputing] = useState(false);
   const [algo, setAlgo] = useState(ALGOS.bfs);
   const [animationTime, setAnimationTime] = useState(2000);
   const [animationCount, setAnimationCount] = useState(0);
@@ -85,6 +86,9 @@ export const Grid = ({ isDarkMode }) => {
       path: [],
       failedPrevious: false,
     }))
+  );
+  const algoWorker = new Worker(
+    new URL("./utils/webworker.js", import.meta.url)
   );
 
   useEffect(() => {
@@ -101,9 +105,16 @@ export const Grid = ({ isDarkMode }) => {
     const execShortestPath = async () => {
       if (algo !== ALGOS.dfs) {
         if (animationCount === cachedVisited[algo].visited.length - 2) {
-          await visualizeShortestPath(cachedVisited[algo].path);
-          setAnimationCount(0);
-          setVisualizationRunning(false);
+          /*
+          settimeout needed because if animationTime === 0,
+          visited and shortest visualizations happen at the 
+          same time which messes things up 
+          */
+          setTimeout(async () => {
+            await visualizeShortestPath(cachedVisited[algo].path);
+            setAnimationCount(0);
+            setVisualizationRunning(false);
+          }, 1);
         }
       }
     };
@@ -129,7 +140,7 @@ export const Grid = ({ isDarkMode }) => {
       setAnimationCount((prev) => prev + 1);
     }
   };
-  
+
   const handleNodeClick = (row, col) => {
     const newGrid = [...grid];
     if (startNode && endNode) {
@@ -262,7 +273,7 @@ export const Grid = ({ isDarkMode }) => {
   };
 
   const changeAnimationTime = (e) => {
-    setAnimationTime(e.target.value);
+    setAnimationTime(parseInt(e.target.value));
     document.documentElement.style.setProperty(
       "--animationTime",
       `${e.target.value / 1000}s`
@@ -352,7 +363,23 @@ export const Grid = ({ isDarkMode }) => {
           cachedVisited[algo].visited.length === 0 &&
           !cachedVisited[algo].failedPrevious
         ) {
-          let result = runAlgo(algo, grid, gridSize, startNode, endNode);
+          setIsComputing(true);
+          let resultPromise = new Promise((resolve) => {
+            algoWorker.onmessage = (e) => {
+              resolve(e.data);
+            };
+          });
+
+          algoWorker.postMessage({
+            algo: algo,
+            grid: grid,
+            gridSize: gridSize,
+            startNode: startNode,
+            endNode: endNode,
+          });
+
+          let result = await resultPromise;
+          setIsComputing(false);
           let newCachedVisited = [...cachedVisited];
           if (result.success) {
             if (algo === ALGOS.dfs) {
@@ -380,7 +407,6 @@ export const Grid = ({ isDarkMode }) => {
       }
     }
   };
-
   const visualizeVisited = (visited) => {
     setVisualizationRunning(true);
     return new Promise((resolve) => {
@@ -458,7 +484,7 @@ export const Grid = ({ isDarkMode }) => {
             <div>
               <button
                 className="random-button"
-                disabled={!visualizationRunning ? false : true}
+                disabled={visualizationRunning || isComputing ? true : false}
                 onClick={randomizeGrid}
                 style={{ color: !visualizationRunning ? "white" : "grey" }}
               >
@@ -468,7 +494,7 @@ export const Grid = ({ isDarkMode }) => {
             <div>
               <button
                 className="reset-button"
-                disabled={!visualizationRunning ? false : true}
+                disabled={visualizationRunning || isComputing ? true : false}
                 onClick={handleResetGrid}
                 style={{ color: !visualizationRunning ? "white" : "grey" }}
               >
@@ -535,7 +561,7 @@ export const Grid = ({ isDarkMode }) => {
           <label>Grid size</label>
           <div className="size-slider">
             <input
-              disabled={!visualizationRunning ? false : true}
+              disabled={visualizationRunning || isComputing ? true : false}
               onChange={changeGridSize}
               id="size_slider"
               type="range"
@@ -573,7 +599,7 @@ export const Grid = ({ isDarkMode }) => {
             </div>
           </label>
           <select
-            disabled={!visualizationRunning ? false : true}
+            disabled={visualizationRunning || isComputing ? true : false}
             name="algo"
             id="algo"
             onChange={handleAlgoChange}
@@ -600,7 +626,9 @@ export const Grid = ({ isDarkMode }) => {
           </label>
           <select
             disabled={
-              !visualizationRunning && algo !== ALGOS.dfs ? false : true
+              (visualizationRunning || isComputing) && algo !== ALGOS.dfs
+                ? true
+                : false
             }
             name="animationType"
             id="animationType"
@@ -620,7 +648,7 @@ export const Grid = ({ isDarkMode }) => {
           <label>Duration</label>
           <div className="duration-slider">
             <input
-              disabled={!visualizationRunning ? false : true}
+              disabled={visualizationRunning || isComputing ? true : false}
               onChange={changeAnimationTime}
               id="animation_time_slider"
               type="range"
@@ -636,12 +664,18 @@ export const Grid = ({ isDarkMode }) => {
           <button
             className="visualize-button"
             disabled={
-              !visualizationRunning && startNode && endNode ? false : true
+              (visualizationRunning || isComputing) && startNode && endNode
+                ? true
+                : false
             }
             onClick={execAlgo}
             style={{ color: !visualizationRunning ? "white" : "grey" }}
           >
-            {!visualizationRunning ? "Start visualization" : "Running..."}
+            {isComputing
+              ? "Computing..."
+              : !visualizationRunning
+              ? "Start visualization"
+              : "Running..."}
           </button>
         </div>
       </div>
