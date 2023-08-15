@@ -106,22 +106,19 @@ export const Grid = ({ isDarkMode }) => {
   useEffect(() => {
     const execShortestPath = async () => {
       if (algo !== ALGOS.dfs) {
-        if (animationCount === cachedVisited[algo].visited.length - 2) {
-          /*
-          settimeout needed because if animationTime === 0,
-          visited and shortest visualizations happen at the 
-          same time which messes things up 
-          */
-          setTimeout(async () => {
+        if (
+          animationCount === cachedVisited[algo].visited.length - 2 ||
+          (animationTime === 0 && visualizationRunning)
+        ) {
             await visualizeShortestPath(cachedVisited[algo].path);
             setAnimationCount(0);
             setVisualizationRunning(false);
-          }, 1);
+    
         }
       }
     };
     execShortestPath();
-  }, [animationCount]);
+  }, [animationCount, animationTime, visualizationRunning]);
 
   useEffect(() => {
     let newGridProps = resizeGrid(grid, gridSize);
