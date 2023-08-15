@@ -37,30 +37,14 @@ const Node = (props) => {
 
   return (
     <div
-      className={classes}
+      className={`${classes} ${isDarkMode ? "dark-mode-node" : ""}`}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       style={{
-        border: `${isDarkMode ? "1px solid teal" : "1px solid #0D1117"}`,
         backgroundImage: isWall ? `url(${path + logo})` : "",
-        position: "relative",
       }}
     >
-      <div>
-        {weight > 0 && (
-          <div
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              fontSize: "12px"
-            }}
-          >
-            {weight}
-          </div>
-        )}
-      </div>
+      <div>{weight > 0 && <div className="weight-text">{weight}</div>}</div>
     </div>
   );
 };
