@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Node from "./Node";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
@@ -70,7 +70,7 @@ const resizeGrid = (grid, newGridSize) => {
   return [newGrid, isStart, isEnd];
 };
 
-export const Grid = ({ isDarkMode }) => {
+export const Grid = React.memo(({ isDarkMode }) => {
   const [grid, setGrid] = useState(createEmptyGrid(DEFAULT_GRID_SIZE));
   const [gridSize, setGridSize] = useState(DEFAULT_GRID_SIZE);
   const [isMouseDown, setIsMouseDown] = useState(false);
@@ -106,12 +106,10 @@ export const Grid = ({ isDarkMode }) => {
   useEffect(() => {
     const execShortestPath = async () => {
       if (algo !== ALGOS.dfs) {
-        if (
-          animationCount === cachedVisited[algo].visited.length - 2
-        ) {
-            await visualizeShortestPath(cachedVisited[algo].path);
-            setAnimationCount(0);
-            setVisualizationRunning(false);
+        if (animationCount === cachedVisited[algo].visited.length - 2) {
+          await visualizeShortestPath(cachedVisited[algo].path);
+          setAnimationCount(0);
+          setVisualizationRunning(false);
         }
       }
     };
@@ -683,6 +681,6 @@ export const Grid = ({ isDarkMode }) => {
       </div>
     </div>
   );
-};
+});
 
 export { ALGOS, ANIMATION_TYPE };

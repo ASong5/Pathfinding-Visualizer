@@ -4,7 +4,7 @@ import { ANIMATION_TYPE } from "./Grid";
 const path = process.env.PUBLIC_URL;
 const logo = "/images/wall-texture.png";
 
-const Node = (props) => {
+const Node = React.memo((props) => {
   const {
     start,
     end,
@@ -47,6 +47,6 @@ const Node = (props) => {
       <div>{weight > 0 && <div className="weight-text">{weight}</div>}</div>
     </div>
   );
-};
+});
 
 export default Node;
