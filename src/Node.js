@@ -14,7 +14,6 @@ const Node = (props) => {
     onClick,
     onMouseEnter,
     weight,
-    setAnimationCount,
     animationType,
     isDarkMode,
   } = props;

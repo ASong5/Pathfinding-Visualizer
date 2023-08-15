@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import Node from "./Node";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import { runAlgo } from "./utils/algorithms";
 import "./Grid.css";
+
+const path = process.env.PUBLIC_URL;
+const loadingGif = "/images/loading.gif";
 
 const DEFAULT_GRID_SIZE = 10; // square root of total grid size;
 const MAX_GRID_SIZE = 50;
@@ -510,6 +512,11 @@ export const Grid = ({ isDarkMode }) => {
             pointerEvents: `${!visualizationRunning ? "auto" : "none"}`,
           }}
         >
+          {isComputing ? (
+            <div className="loading-overlay">
+              <img src={path + loadingGif} alt="Loading" />
+            </div>
+          ) : null}
           {grid.map((row, rowIndex) => (
             <div className="row" key={rowIndex}>
               {row.map((node, colIndex) => (
