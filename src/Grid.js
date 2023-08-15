@@ -107,18 +107,16 @@ export const Grid = ({ isDarkMode }) => {
     const execShortestPath = async () => {
       if (algo !== ALGOS.dfs) {
         if (
-          animationCount === cachedVisited[algo].visited.length - 2 ||
-          (animationTime === 0 && visualizationRunning)
+          animationCount === cachedVisited[algo].visited.length - 2
         ) {
             await visualizeShortestPath(cachedVisited[algo].path);
             setAnimationCount(0);
             setVisualizationRunning(false);
-    
         }
       }
     };
     execShortestPath();
-  }, [animationCount, animationTime, visualizationRunning]);
+  }, [animationCount]);
 
   useEffect(() => {
     let newGridProps = resizeGrid(grid, gridSize);
@@ -272,7 +270,7 @@ export const Grid = ({ isDarkMode }) => {
   };
 
   const changeAnimationTime = (e) => {
-    setAnimationTime(parseInt(e.target.value));
+    setAnimationTime(parseFloat(e.target.value));
     document.documentElement.style.setProperty(
       "--animationTime",
       `${e.target.value / 1000}s`
@@ -656,7 +654,7 @@ export const Grid = ({ isDarkMode }) => {
               onChange={changeAnimationTime}
               id="animation_time_slider"
               type="range"
-              min={0}
+              min={0.1}
               max={10000}
               defaultValue={animationTime}
             />
