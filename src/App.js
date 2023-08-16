@@ -16,7 +16,7 @@ function App() {
   useEffect(() => {
     if (isDarkMode) document.body.className = "dark-mode";
     else document.body.className = "light-mode";
-  });
+  }, [isDarkMode]);
 
   return (
     <div className={"App"}>

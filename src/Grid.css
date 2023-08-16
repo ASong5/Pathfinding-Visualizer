@@ -339,7 +339,7 @@ ol {
 }
 
 .dark-mode-node {
-  border: 1px solid teal;
+  border: 1px solid teal !important;
 }
 
 .loading-overlay {
@@ -373,6 +373,7 @@ ol {
   box-sizing: border-box;
   cursor: pointer;
   position: relative;
+  border: 1px solid #0D1117;
 }
 
 @keyframes wall-animation {
