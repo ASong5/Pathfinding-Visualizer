@@ -1,5 +1,12 @@
 import { ALGOS } from "../Grid";
 
+const DIRECTIONS = [
+  [0, 1],
+  [-1, 0],
+  [1, 0],
+  [0, -1],
+];
+
 const isVisited = (visited, neighbour) => {
   for (let i = 0; i < visited.length; i++) {
     if (visited[i][0] === neighbour[0] && visited[i][1] === neighbour[1]) {
@@ -10,31 +17,24 @@ const isVisited = (visited, neighbour) => {
 };
 
 const getNeighbours = (grid, node, gridSize, unvisited = []) => {
-  let neighbours = [];
-  if (
-    node[1] + 1 < gridSize &&
-    !isVisited(unvisited, [node[0], node[1] + 1]) &&
-    !grid[node[0]][node[1] + 1].isWall
-  )
-    neighbours.push([node[0], node[1] + 1]);
-  if (
-    node[0] - 1 >= 0 &&
-    !isVisited(unvisited, [node[0] - 1, node[1]]) &&
-    !grid[node[0] - 1][node[1]].isWall
-  )
-    neighbours.push([node[0] - 1, node[1]]);
-  if (
-    node[0] + 1 < gridSize &&
-    !isVisited(unvisited, [node[0] + 1, node[1]]) &&
-    !grid[node[0] + 1][node[1]].isWall
-  )
-    neighbours.push([node[0] + 1, node[1]]);
-  if (
-    node[1] - 1 >= 0 &&
-    !isVisited(unvisited, [node[0], node[1] - 1]) &&
-    !grid[node[0]][node[1] - 1].isWall
-  )
-    neighbours.push([node[0], node[1] - 1]);
+  const [row, col] = node;
+  const neighbours = [];
+
+  for (const [dRow, dCol] of DIRECTIONS) {
+    const newRow = row + dRow;
+    const newCol = col + dCol;
+
+    if (
+      newRow >= 0 &&
+      newRow < gridSize &&
+      newCol >= 0 &&
+      newCol < gridSize &&
+      !isVisited(unvisited, [newRow, newCol]) &&
+      !grid[newRow][newCol].isWall
+    ) {
+      neighbours.push([newRow, newCol]);
+    }
+  }
 
   return neighbours;
 };
@@ -76,7 +76,8 @@ export const runAlgo = (algo, grid, gridSize, startNode, endNode) => {
       break;
     case ALGOS.dfs:
       let path = [];
-      result = execDFS(grid, gridSize, startNode, endNode, path);
+      let depth = 0;
+      result = execDFS(grid, gridSize, startNode, endNode, path, depth);
       result.shortestPath = path;
       break;
     case ALGOS.dijkstra:
@@ -126,21 +127,24 @@ const execBFS = (grid, gridLength, startNode, endNode) => {
 };
 
 const execDFS = (grid, gridLength, startNode, endNode, visited) => {
-  if (startNode[0] === endNode[0] && startNode[1] === endNode[1]) {
-    return { success: true };
-  }
+  let stack = [];
 
-  visited.push(startNode);
+  stack.push(startNode);
 
-  let neighbours = getNeighbours(grid, startNode, gridLength);
+  while (stack.length > 0) {
+    let currentNode = stack.pop();
 
-  for (let neighbour of neighbours) {
-    if (!isVisited(visited, neighbour)) {
-      if (execDFS(grid, gridLength, neighbour, endNode, visited).success) {
-        return { success: true };
-      }
+    if (currentNode[0] === endNode[0] && currentNode[1] === endNode[1]) {
+      return { success: true };
+    }
+
+    if (!isVisited(visited, currentNode)) {
+      visited.push(currentNode);
+      let neighbours = getNeighbours(grid, currentNode, gridLength);
+      stack.push(...neighbours);
     }
   }
+
   return { success: false };
 };
 
