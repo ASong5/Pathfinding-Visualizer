@@ -1,21 +1,21 @@
 {
   "files": {
-    "main.css": "/Pathfinding-Visualizer/static/css/main.e0112e3b.css",
-    "main.js": "/Pathfinding-Visualizer/static/js/main.8fade630.js",
-    "static/css/565.db6520f9.chunk.css": "/Pathfinding-Visualizer/static/css/565.db6520f9.chunk.css",
-    "static/js/565.b36830b4.chunk.js": "/Pathfinding-Visualizer/static/js/565.b36830b4.chunk.js",
+    "main.css": "/Pathfinding-Visualizer/static/css/main.a6260e51.css",
+    "main.js": "/Pathfinding-Visualizer/static/js/main.1275be9c.js",
+    "static/css/565.49e9d83c.chunk.css": "/Pathfinding-Visualizer/static/css/565.49e9d83c.chunk.css",
+    "static/js/565.8476d46b.chunk.js": "/Pathfinding-Visualizer/static/js/565.8476d46b.chunk.js",
     "static/js/787.1e945c16.chunk.js": "/Pathfinding-Visualizer/static/js/787.1e945c16.chunk.js",
     "static/js/405.c3c100cd.chunk.js": "/Pathfinding-Visualizer/static/js/405.c3c100cd.chunk.js",
     "index.html": "/Pathfinding-Visualizer/index.html",
-    "main.e0112e3b.css.map": "/Pathfinding-Visualizer/static/css/main.e0112e3b.css.map",
-    "main.8fade630.js.map": "/Pathfinding-Visualizer/static/js/main.8fade630.js.map",
-    "565.db6520f9.chunk.css.map": "/Pathfinding-Visualizer/static/css/565.db6520f9.chunk.css.map",
-    "565.b36830b4.chunk.js.map": "/Pathfinding-Visualizer/static/js/565.b36830b4.chunk.js.map",
+    "main.a6260e51.css.map": "/Pathfinding-Visualizer/static/css/main.a6260e51.css.map",
+    "main.1275be9c.js.map": "/Pathfinding-Visualizer/static/js/main.1275be9c.js.map",
+    "565.49e9d83c.chunk.css.map": "/Pathfinding-Visualizer/static/css/565.49e9d83c.chunk.css.map",
+    "565.8476d46b.chunk.js.map": "/Pathfinding-Visualizer/static/js/565.8476d46b.chunk.js.map",
     "787.1e945c16.chunk.js.map": "/Pathfinding-Visualizer/static/js/787.1e945c16.chunk.js.map",
     "405.c3c100cd.chunk.js.map": "/Pathfinding-Visualizer/static/js/405.c3c100cd.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.e0112e3b.css",
-    "static/js/main.8fade630.js"
+    "static/css/main.a6260e51.css",
+    "static/js/main.1275be9c.js"
   ]
 }
