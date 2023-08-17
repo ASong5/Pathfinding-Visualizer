@@ -373,7 +373,7 @@ ol {
   box-sizing: border-box;
   cursor: pointer;
   position: relative;
-  border: 1px solid #0D1117;
+  border: 1px solid #0d1117;
 }
 
 @keyframes wall-animation {
@@ -427,29 +427,35 @@ ol {
     transform: scale(0);
     border-radius: 60%;
   }
-  25% {
-    background-color: #fd686f;
-    transform: scale(0.6);
+  16% {
+    background-color: #5ef19b;
+    transform: scale(0.4);
     border-radius: 45%;
-
+  }
+  33% {
+    background-color: rgb(255, 255, 131);
+    transform: scale(0.8);
+    border-radius: 30%;
   }
   50% {
-    background-color: rgb(44, 44, 254);
-    transform: scale(1.3);
-    border-radius: 30%;
-
-  }
-  75% {
-    background-color: pink;
-    transform: scale(1.1);
+    background-color: rgb(86, 86, 252);
+    transform: scale(1.2);
     border-radius: 15%;
-
+  }
+  66% {
+    background-color: rgb(44, 44, 254);
+    transform: scale(1.6);
+    border-radius: 0%;
+  }
+  83% {
+    background-color: #f673ff;
+    transform: scale(1.4);
+    border-radius: 0%;
   }
   100% {
     background-color: #9b37ff;
     transform: scale(1);
     border-radius: 0%;
-
   }
 }
 
@@ -474,16 +480,13 @@ ol {
 @keyframes shortest-color-animation {
   0% {
     transform: scale(0.7);
-
   }
 
   50% {
     transform: scale(1.3);
-
   }
 
   100% {
     transform: scale(1);
-
   }
 }
