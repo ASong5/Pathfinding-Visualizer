@@ -81,7 +81,7 @@ export const Grid = React.memo(({ isDarkMode }) => {
   const [algo, setAlgo] = useState(ALGOS.bfs);
   const [animationTime, setAnimationTime] = useState(2000);
   const [animationCount, setAnimationCount] = useState(0);
-  const [animationType, setAnimationType] = useState(ANIMATION_TYPE.swarm);
+  const [animationType, setAnimationType] = useState(ANIMATION_TYPE.fade);
   const [cachedVisited, setCachedVisited] = useState(
     Array.from({ length: Object.keys(ALGOS).length }, () => ({
       visited: [],
