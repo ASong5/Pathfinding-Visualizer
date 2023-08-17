@@ -38,7 +38,7 @@ const createEmptyGrid = (gridSize) => {
         isStart: false,
         isEnd: false,
         isShortest: false,
-        weight: 0,
+        weight: 1,
       }))
     );
   }
@@ -66,7 +66,6 @@ const resizeGrid = (grid, newGridSize) => {
         newGrid[row][col].weight = grid[row][col].weight;
     }
   }
-
   return [newGrid, isStart, isEnd];
 };
 
@@ -521,11 +520,8 @@ export const Grid = React.memo(({ isDarkMode }) => {
                   isWall={node.isWall}
                   isVisited={node.isVisited}
                   isShortest={node.isShortest}
-                  weight={
-                    algo === ALGOS.aStar || algo === ALGOS.dijkstra
-                      ? node.weight
-                      : 0
-                  }
+                  algo={algo}
+                  weight={node.weight}
                   setAnimationCount={setAnimationCount}
                   animationType={animationType}
                   onClick={() => handleNodeClick(rowIndex, colIndex)}

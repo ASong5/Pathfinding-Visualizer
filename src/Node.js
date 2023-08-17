@@ -1,5 +1,5 @@
 import React from "react";
-import { ANIMATION_TYPE } from "./Grid";
+import { ALGOS, ANIMATION_TYPE } from "./Grid";
 
 const path = process.env.PUBLIC_URL;
 const logo = "/images/wall-texture.png";
@@ -13,6 +13,7 @@ const Node = React.memo((props) => {
     isShortest,
     onClick,
     onMouseEnter,
+    algo,
     weight,
     animationType,
     isDarkMode,
@@ -44,7 +45,11 @@ const Node = React.memo((props) => {
         backgroundImage: isWall ? `url(${path + logo})` : "",
       }}
     >
-      <div>{weight > 0 && <div className="weight-text">{weight}</div>}</div>
+      <div>
+        {(algo === ALGOS.dijkstra || algo === ALGOS.aStar) && (
+          <div className="weight-text">{weight}</div>
+        )}
+      </div>
     </div>
   );
 });
