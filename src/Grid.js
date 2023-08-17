@@ -88,8 +88,8 @@ export const Grid = React.memo(({ isDarkMode }) => {
       failedPrevious: false,
     }))
   );
-  const algoWorker = new Worker(
-    new URL("./utils/webworker.js", import.meta.url)
+  const [algoWorker, setAlgoWorker] = useState(
+    null
   );
 
   useEffect(() => {
@@ -100,6 +100,9 @@ export const Grid = React.memo(({ isDarkMode }) => {
 
     const gridContainer = document.querySelector(".grid-container");
     gridContainer.addEventListener("animationend", handleAnimationEnd);
+
+    setAlgoWorker(new Worker(new URL("./utils/webworker.js", import.meta.url)))
+
   }, []);
 
   useEffect(() => {
