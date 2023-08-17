@@ -76,8 +76,7 @@ export const runAlgo = (algo, grid, gridSize, startNode, endNode) => {
       break;
     case ALGOS.dfs:
       let path = [];
-      let depth = 0;
-      result = execDFS(grid, gridSize, startNode, endNode, path, depth);
+      result = execDFS(grid, gridSize, startNode, endNode, path);
       result.shortestPath = path;
       break;
     case ALGOS.dijkstra:
