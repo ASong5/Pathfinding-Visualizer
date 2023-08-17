@@ -405,90 +405,85 @@ ol {
 
 @keyframes visited-color-animation-fade {
   0% {
-    background-color: red;
+    background-color: #fd686f;
   }
-  16% {
-    background-color: red;
-  }
-  33% {
+  25% {
     background-color: orange;
   }
   50% {
     background-color: yellow;
   }
-  66% {
-    background-color: green;
-  }
-  83% {
-    background-color: blue;
+  75% {
+    background-color: #5ef19b;
   }
   100% {
-    background-color: #8308ff;
+    background-color: #9b37ff;
   }
 }
 
 @keyframes visited-color-animation-swarm {
   0% {
-    background-color: red;
+    background-color: #fd686f;
     transform: scale(0);
+    border-radius: 60%;
   }
-  16% {
-    background-color: red;
-    transform: scale(0.5);
-  }
-  33% {
-    background-color: orange;
-    transform: scale(0.85);
+  25% {
+    background-color: #fd686f;
+    transform: scale(1.3);
+    border-radius: 45%;
+
   }
   50% {
-    background-color: yellow;
-    transform: scale(1.3);
-  }
-  66% {
-    background-color: green;
+    background-color: rgb(44, 44, 254);
     transform: scale(1.2);
+    border-radius: 30%;
+
   }
-  83% {
-    background-color: blue;
+  75% {
+    background-color: pink;
     transform: scale(1.1);
+    border-radius: 15%;
+
   }
   100% {
-    background-color: #8308ff;
+    background-color: #9b37ff;
     transform: scale(1);
+    border-radius: 0%;
+
   }
 }
 
 .visited-swarm {
-  background-color: #8308ff;
+  background-color: #9b37ff;
   animation-duration: var(--animationTime);
   animation-name: visited-color-animation-swarm;
 }
 
 .visited-fade {
-  background-color: #8308ff;
+  background-color: #9b37ff;
   animation-duration: var(--animationTime);
   animation-name: visited-color-animation-fade;
 }
 
 .shortest {
   animation-name: shortest-color-animation;
-  background-color: blue;
+  background-color: rgb(44, 44, 254);
   animation-duration: var(--animationTime);
 }
 
 @keyframes shortest-color-animation {
   0% {
-    transform: scale(0.4);
-    background-color: blue;
+    transform: scale(0.7);
+
   }
 
   50% {
     transform: scale(1.3);
-    background-color: blue;
+
   }
 
   100% {
     transform: scale(1);
-    background-color: blue;
+
   }
 }
