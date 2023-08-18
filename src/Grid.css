@@ -431,32 +431,6 @@ ol {
     transform: scale(0);
     border-radius: 60%;
   }
-  25% {
-    background-color: orange;
-    transform: scale(0.6);
-    border-radius: 30%;
-  }
-  50% {
-    background-color: yellow;
-    transform: scale(1.4);
-    border-radius: 15%;
-  }
-  75% {
-    background-color: #5ef19b;
-    transform: scale(1.2);
-    border-radius: 0%;
-  }
-  100% {
-    background-color: #9b37ff;
-    transform: scale(1);
-    border-radius: 0%;
-  }
-
-  /* 0% {
-    background-color: #fd686f;
-    transform: scale(0);
-    border-radius: 60%;
-  }
   16% {
     background-color: #5ef19b;
     transform: scale(0.4);
@@ -486,7 +460,7 @@ ol {
     background-color: #9b37ff;
     transform: scale(1);
     border-radius: 0%;
-  } */
+  }
 }
 
 .visited-swarm {
