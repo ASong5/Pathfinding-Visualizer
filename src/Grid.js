@@ -625,7 +625,7 @@ export const Grid = React.memo(({ isDarkMode }) => {
           </label>
           <select
             disabled={
-              (visualizationRunning || isComputing) && algo !== ALGOS.dfs
+              (visualizationRunning || isComputing) || algo === ALGOS.dfs
                 ? true
                 : false
             }

@@ -376,6 +376,10 @@ ol {
   border: 1px solid #0d1117;
 }
 
+#animationType:disabled{
+  color: grey !important;
+}
+
 @keyframes wall-animation {
   50% {
     transform: scale(1.3);
