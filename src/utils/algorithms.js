@@ -1,4 +1,5 @@
 import { ALGOS } from "../Grid";
+import { MinPriorityQueue } from "@datastructures-js/priority-queue";
 
 const DIRECTIONS = [
   [0, 1],
@@ -6,6 +7,14 @@ const DIRECTIONS = [
   [1, 0],
   [0, -1],
 ];
+
+const heuristic = (node, endNode) => {
+  // heuristic uses manhattan distance
+  let dx = Math.abs(node[0] - endNode[0]);
+  let dy = Math.abs(node[1] - endNode[1]);
+
+  return dx + dy;
+};
 
 const isVisited = (visited, neighbour) => {
   for (let i = 0; i < visited.length; i++) {
@@ -39,34 +48,6 @@ const getNeighbours = (grid, node, gridSize, unvisited = []) => {
   return neighbours;
 };
 
-const findNodeWithSmallestDistance = (nodeMap, visited) => {
-  let smallestDistance = Infinity;
-  let smallestNode = null;
-
-  for (const [key, value] of nodeMap) {
-    if (
-      value.distance < smallestDistance &&
-      !isVisited(visited, JSON.parse(key))
-    ) {
-      smallestDistance = value.distance;
-      smallestNode = key;
-    }
-  }
-
-  return smallestNode;
-};
-
-const getNeighbourDistances = (grid, neighbours) => {
-  let neighbourDistances = new Map();
-  neighbours.forEach((neighbour) => {
-    neighbourDistances.set(
-      JSON.stringify(neighbour),
-      grid[neighbour[0]][neighbour[1]].weight
-    );
-  });
-  return neighbourDistances;
-};
-
 export const runAlgo = (algo, grid, gridSize, startNode, endNode) => {
   let result = {};
 
@@ -81,6 +62,9 @@ export const runAlgo = (algo, grid, gridSize, startNode, endNode) => {
       break;
     case ALGOS.dijkstra:
       result = execDijkstras(grid, gridSize, startNode, endNode);
+      break;
+    case ALGOS.aStar:
+      result = execAStar(grid, gridSize, startNode, endNode);
       break;
     default:
       result.success = false;
@@ -148,61 +132,86 @@ const execDFS = (grid, gridLength, startNode, endNode, visited) => {
 };
 
 const execDijkstras = (grid, gridLength, startNode, endNode) => {
-  let nodeMap = new Map();
+  let nodeMap = {};
   let visited = [];
-  let unvisited = [];
+  let gScore = {};
+  let unvisited = new MinPriorityQueue((node) => gScore[node] || Infinity);
+  unvisited.push(startNode);
+  gScore[startNode] = 0;
 
-  for (let row = 0; row < gridLength; row++) {
-    for (let col = 0; col < gridLength; col++) {
-      if (!grid[row][col].isWall) {
-        unvisited.push([row, col]);
-        nodeMap.set(JSON.stringify([row, col]), {
-          distance: Infinity,
-          prev: null,
-        });
-      }
-    }
-  }
-
-  let currNode = startNode;
-  nodeMap.set(JSON.stringify(currNode), { distance: 0, prev: null });
-
-  while (unvisited.length !== 0) {
-    let neighbourDistances = getNeighbourDistances(
-      grid,
-      getNeighbours(grid, currNode, gridLength, visited)
-    );
-    // update neighbour's shortest distance in nodeMap
-    for (const [key, val] of neighbourDistances) {
-      let oldNodeDistance = nodeMap.get(key).distance;
-      let newNodeDistance =
-        val + nodeMap.get(JSON.stringify(currNode)).distance;
-      if (newNodeDistance <= oldNodeDistance) {
-        nodeMap.set(key, {
-          distance: newNodeDistance,
-          prev: currNode,
-        });
-      }
-    }
-
-    visited.push(currNode);
+  while (!unvisited.isEmpty()) {
+    let currNode = unvisited.pop();
+    if (!isVisited(visited, currNode)) visited.push(currNode);
     if (currNode[0] === endNode[0] && currNode[1] === endNode[1]) {
       let path = [];
       let nodeInPath = endNode;
+
       while (nodeInPath[0] !== startNode[0] || nodeInPath[1] !== startNode[1]) {
         path.push(nodeInPath);
-        nodeInPath = nodeMap.get(JSON.stringify(nodeInPath)).prev;
+        nodeInPath = nodeMap[nodeInPath];
       }
       return { success: true, visited: visited, shortestPath: path.reverse() };
     }
-    unvisited.splice(
-      unvisited.findIndex(
-        (node) => node[0] === currNode[0] && node[1] === currNode[1]
-      ),
-      1
-    );
-    currNode = JSON.parse(findNodeWithSmallestDistance(nodeMap, visited));
+    let neighbours = getNeighbours(grid, currNode, gridLength, visited);
+    for (const neighbour of neighbours) {
+      let newGScore = gScore[currNode] + grid[neighbour[0]][neighbour[1]].weight;
+      if (!gScore.hasOwnProperty(neighbour) || newGScore < gScore[neighbour]) {
+        nodeMap[neighbour] = currNode;
+        gScore[neighbour] = newGScore;
+        unvisited.push(neighbour);
+      }
+    }
   }
 
+  return { success: false };
+};
+
+
+const execAStar = (grid, gridLength, startNode, endNode) => {
+  let unvisitedQueue = new MinPriorityQueue(
+    (node) => fScore[node]
+  );
+  unvisitedQueue.push(startNode);
+  let visited = [];
+  let nodeMap = {};
+  let gScore = {};
+  let fScore = {};
+
+  gScore[startNode] = 0;
+  fScore[startNode] = heuristic(startNode, endNode);
+
+  while (!unvisitedQueue.isEmpty()) {
+    let currNode = unvisitedQueue.pop();
+    if (!isVisited(visited, currNode)) visited.push(currNode);
+    if (currNode[0] === endNode[0] && currNode[1] === endNode[1]) {
+      let path = [];
+      let nodeInPath = endNode;
+
+      while (nodeInPath[0] !== startNode[0] || nodeInPath[1] !== startNode[1]) {
+        path.push(nodeInPath);
+        nodeInPath = nodeMap[nodeInPath];
+      }
+      return { success: true, visited: visited, shortestPath: path.reverse() };
+    }
+    let neighbours = getNeighbours(grid, currNode, gridLength);
+    for (const neighbour of neighbours) {
+      let tentativeGScore =
+        gScore[currNode] + grid[neighbour[0]][neighbour[1]].weight;
+      if (!gScore.hasOwnProperty(neighbour)) gScore[neighbour] = Infinity;
+      if (tentativeGScore < gScore[neighbour]) {
+        nodeMap[neighbour] = currNode;
+        gScore[neighbour] = tentativeGScore;
+        fScore[neighbour] = tentativeGScore + heuristic(neighbour, endNode);
+
+        let found = unvisitedQueue
+          .toArray()
+          .some((node) => node[0] === neighbour[0] && node[1] === neighbour[1]);
+
+        if (!found) {
+          unvisitedQueue.push(neighbour);
+        }
+      }
+    }
+  }
   return { success: false };
 };

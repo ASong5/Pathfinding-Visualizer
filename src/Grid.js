@@ -62,7 +62,7 @@ const resizeGrid = (grid, newGridSize) => {
         newGrid[row][col].isEnd = true;
         isEnd = true;
       } else if (grid[row][col].isWall) newGrid[row][col].isWall = true;
-      else if (grid[row][col].weight > 0)
+      
         newGrid[row][col].weight = grid[row][col].weight;
     }
   }
@@ -149,7 +149,7 @@ export const Grid = React.memo(({ isDarkMode }) => {
         setEndNode(null);
       } else {
         newGrid[row][col].isWall = !newGrid[row][col].isWall;
-        newGrid[row][col].weight = 0;
+        newGrid[row][col].weight = 1;
       }
     } else if (!startNode) {
       if (newGrid[row][col].isEnd) {
@@ -158,7 +158,7 @@ export const Grid = React.memo(({ isDarkMode }) => {
       } else {
         newGrid[row][col].isStart = true;
         newGrid[row][col].isWall = false;
-        newGrid[row][col].weight = 0;
+        newGrid[row][col].weight = 1;
         setStartNode([row, col]);
       }
     } else if (!endNode) {
@@ -168,7 +168,7 @@ export const Grid = React.memo(({ isDarkMode }) => {
       } else {
         newGrid[row][col].isEnd = true;
         newGrid[row][col].isWall = false;
-        newGrid[row][col].weight = 0;
+        newGrid[row][col].weight = 1;
         setEndNode([row, col]);
       }
     }
@@ -187,7 +187,7 @@ export const Grid = React.memo(({ isDarkMode }) => {
       const newGrid = [...grid];
       if (!newGrid[row][col].isStart && !newGrid[row][col].isEnd) {
         newGrid[row][col].isWall = !newGrid[row][col].isWall;
-        newGrid[row][col].weight = 0;
+        newGrid[row][col].weight = 1;
       }
       setCachedVisited(
         Array.from({ length: Object.keys(ALGOS).length }, () => ({
