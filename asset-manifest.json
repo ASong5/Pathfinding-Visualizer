@@ -1,21 +1,21 @@
 {
   "files": {
     "main.css": "/Pathfinding-Visualizer/static/css/main.a75b5690.css",
-    "main.js": "/Pathfinding-Visualizer/static/js/main.0c134dc1.js",
-    "static/css/565.97777312.chunk.css": "/Pathfinding-Visualizer/static/css/565.97777312.chunk.css",
-    "static/js/565.84de1098.chunk.js": "/Pathfinding-Visualizer/static/js/565.84de1098.chunk.js",
+    "main.js": "/Pathfinding-Visualizer/static/js/main.66beac89.js",
+    "static/css/333.504b5a7c.chunk.css": "/Pathfinding-Visualizer/static/css/333.504b5a7c.chunk.css",
+    "static/js/333.a78dae6b.chunk.js": "/Pathfinding-Visualizer/static/js/333.a78dae6b.chunk.js",
     "static/js/787.1e945c16.chunk.js": "/Pathfinding-Visualizer/static/js/787.1e945c16.chunk.js",
-    "static/js/669.6be0c80b.chunk.js": "/Pathfinding-Visualizer/static/js/669.6be0c80b.chunk.js",
+    "static/js/703.137d7a05.chunk.js": "/Pathfinding-Visualizer/static/js/703.137d7a05.chunk.js",
     "index.html": "/Pathfinding-Visualizer/index.html",
     "main.a75b5690.css.map": "/Pathfinding-Visualizer/static/css/main.a75b5690.css.map",
-    "main.0c134dc1.js.map": "/Pathfinding-Visualizer/static/js/main.0c134dc1.js.map",
-    "565.97777312.chunk.css.map": "/Pathfinding-Visualizer/static/css/565.97777312.chunk.css.map",
-    "565.84de1098.chunk.js.map": "/Pathfinding-Visualizer/static/js/565.84de1098.chunk.js.map",
+    "main.66beac89.js.map": "/Pathfinding-Visualizer/static/js/main.66beac89.js.map",
+    "333.504b5a7c.chunk.css.map": "/Pathfinding-Visualizer/static/css/333.504b5a7c.chunk.css.map",
+    "333.a78dae6b.chunk.js.map": "/Pathfinding-Visualizer/static/js/333.a78dae6b.chunk.js.map",
     "787.1e945c16.chunk.js.map": "/Pathfinding-Visualizer/static/js/787.1e945c16.chunk.js.map",
-    "669.6be0c80b.chunk.js.map": "/Pathfinding-Visualizer/static/js/669.6be0c80b.chunk.js.map"
+    "703.137d7a05.chunk.js.map": "/Pathfinding-Visualizer/static/js/703.137d7a05.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a75b5690.css",
-    "static/js/main.0c134dc1.js"
+    "static/js/main.66beac89.js"
   ]
 }
