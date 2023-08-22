@@ -67,6 +67,10 @@ function App() {
         </div>
         <Grid isDarkMode={isDarkMode}></Grid>
       </div>
+      <div className="footer">
+        <div><h5>Made by Andrew Song - SongAndrewBMS@gmail.com</h5></div>
+        <div><h5>© 2023</h5></div>
+      </div>
     </div>
   );
 }

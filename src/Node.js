@@ -1,6 +1,5 @@
 import React from "react";
 import { ALGOS, ANIMATION_TYPE } from "./Grid";
-import { isElementType } from "@testing-library/user-event/dist/utils";
 
 const path = process.env.PUBLIC_URL;
 const logo = "/images/wall-texture.png";

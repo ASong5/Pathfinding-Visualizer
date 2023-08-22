@@ -88,3 +88,11 @@
   background-color: white;
   color: black;
 }
+
+.footer{
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10.5% 0 10.5%;
+  margin-bottom: 0;
+  max-height: 0;
+}

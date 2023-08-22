@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Node from "./Node";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
@@ -62,8 +62,8 @@ const resizeGrid = (grid, newGridSize) => {
         newGrid[row][col].isEnd = true;
         isEnd = true;
       } else if (grid[row][col].isWall) newGrid[row][col].isWall = true;
-      
-        newGrid[row][col].weight = grid[row][col].weight;
+
+      newGrid[row][col].weight = grid[row][col].weight;
     }
   }
   return [newGrid, isStart, isEnd];
@@ -71,6 +71,8 @@ const resizeGrid = (grid, newGridSize) => {
 
 export const Grid = React.memo(({ isDarkMode }) => {
   const [grid, setGrid] = useState(createEmptyGrid(DEFAULT_GRID_SIZE));
+  const [weightValue, setWeightValue] = useState(1);
+  const [isResetDisabled, setIsResetDisabled] = useState(true);
   const [gridSize, setGridSize] = useState(DEFAULT_GRID_SIZE);
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [startNode, setStartNode] = useState(null);
@@ -88,9 +90,8 @@ export const Grid = React.memo(({ isDarkMode }) => {
       failedPrevious: false,
     }))
   );
-  const [algoWorker, setAlgoWorker] = useState(
-    null
-  );
+  const [algoWorker, setAlgoWorker] = useState(null);
+  const gridRef = useRef(null);
 
   useEffect(() => {
     document.documentElement.style.setProperty(
@@ -101,8 +102,7 @@ export const Grid = React.memo(({ isDarkMode }) => {
     const gridContainer = document.querySelector(".grid-container");
     gridContainer.addEventListener("animationend", handleAnimationEnd);
 
-    setAlgoWorker(new Worker(new URL("./utils/webworker.js", import.meta.url)))
-
+    setAlgoWorker(new Worker(new URL("./utils/webworker.js", import.meta.url)));
   }, []);
 
   useEffect(() => {
@@ -138,9 +138,21 @@ export const Grid = React.memo(({ isDarkMode }) => {
     }
   };
 
-  const handleNodeClick = (row, col) => {
+  const handleNodeClick = (row, col, e) => {
     const newGrid = [...grid];
-    if (startNode && endNode) {
+    if (e.ctrlKey) {
+      if (
+        !newGrid[row][col].isStart &&
+        !newGrid[row][col].isEnd &&
+        !newGrid[row][col].isWall &&
+        (algo === ALGOS.dijkstra || algo === ALGOS.aStar) &&
+        newGrid[row][col].weight !== weightValue
+      ) {
+        setIsResetDisabled(false);
+        newGrid[row][col].weight = weightValue;
+      }
+    } else if (startNode && endNode) {
+      setIsResetDisabled(false);
       if (newGrid[row][col].isStart) {
         newGrid[row][col].isStart = false;
         setStartNode(null);
@@ -149,26 +161,40 @@ export const Grid = React.memo(({ isDarkMode }) => {
         setEndNode(null);
       } else {
         newGrid[row][col].isWall = !newGrid[row][col].isWall;
-        newGrid[row][col].weight = 1;
+        if (
+          (algo === ALGOS.dijkstra || algo === ALGOS.aStar) &&
+          newGrid[row][col].weight !== weightValue
+        )
+          newGrid[row][col].weight = weightValue;
       }
     } else if (!startNode) {
+      setIsResetDisabled(false);
       if (newGrid[row][col].isEnd) {
         newGrid[row][col].isEnd = false;
         setEndNode(null);
       } else {
         newGrid[row][col].isStart = true;
         newGrid[row][col].isWall = false;
-        newGrid[row][col].weight = 1;
+        if (
+          (algo === ALGOS.dijkstra || algo === ALGOS.aStar) &&
+          newGrid[row][col].weight !== weightValue
+        )
+          newGrid[row][col].weight = weightValue;
         setStartNode([row, col]);
       }
     } else if (!endNode) {
+      setIsResetDisabled(false);
       if (newGrid[row][col].isStart) {
         newGrid[row][col].isStart = false;
         setStartNode(null);
       } else {
         newGrid[row][col].isEnd = true;
         newGrid[row][col].isWall = false;
-        newGrid[row][col].weight = 1;
+        if (
+          (algo === ALGOS.dijkstra || algo === ALGOS.aStar) &&
+          newGrid[row][col].weight !== weightValue
+        )
+          newGrid[row][col].weight = weightValue;
         setEndNode([row, col]);
       }
     }
@@ -182,12 +208,29 @@ export const Grid = React.memo(({ isDarkMode }) => {
     setGrid(newGrid);
   };
 
-  const handleNodeDrag = (row, col) => {
-    if (isMouseDown && startNode && endNode) {
+  const handleNodeDrag = (row, col, e) => {
+    if (isMouseDown) {
       const newGrid = [...grid];
-      if (!newGrid[row][col].isStart && !newGrid[row][col].isEnd) {
-        newGrid[row][col].isWall = !newGrid[row][col].isWall;
-        newGrid[row][col].weight = 1;
+      if (
+        (algo === ALGOS.dijkstra || algo === ALGOS.aStar) &&
+        newGrid[row][col].weight !== weightValue
+      )
+        setIsResetDisabled(false);
+      if (e.ctrlKey) {
+        if (
+          !newGrid[row][col].isStart &&
+          !newGrid[row][col].isEnd &&
+          !newGrid[row][col].isWall &&
+          (algo === ALGOS.dijkstra || algo === ALGOS.aStar) &&
+          newGrid[row][col].weight !== weightValue
+        ) {
+          newGrid[row][col].weight = weightValue;
+        }
+      } else if (startNode && endNode) {
+        if (!newGrid[row][col].isStart && !newGrid[row][col].isEnd) {
+          newGrid[row][col].isWall = !newGrid[row][col].isWall;
+          newGrid[row][col].weight = weightValue;
+        }
       }
       setCachedVisited(
         Array.from({ length: Object.keys(ALGOS).length }, () => ({
@@ -210,6 +253,7 @@ export const Grid = React.memo(({ isDarkMode }) => {
 
   const handleResetGrid = () => {
     setGrid(createEmptyGrid(gridSize));
+    setIsResetDisabled(true);
     setCachedVisited(
       Array.from({ length: Object.keys(ALGOS).length }, () => ({
         visited: [],
@@ -288,7 +332,12 @@ export const Grid = React.memo(({ isDarkMode }) => {
     );
   };
 
+  const changeWeightValue = (e) => {
+    setWeightValue(parseInt(e.target.value));
+  };
+
   const randomizeGrid = () => {
+    setIsResetDisabled(false);
     const newGrid = createEmptyGrid(gridSize);
     const randomProbability = Math.random();
     const maxWalls = Math.pow(gridSize, 2) * 0.2;
@@ -352,6 +401,11 @@ export const Grid = React.memo(({ isDarkMode }) => {
       }))
     );
   };
+
+  const scrollToGrid = () => {
+    gridRef.current.scrollIntoView({behaviour: "smooth", block: "start"});
+    execAlgo();
+  }
 
   const execAlgo = async () => {
     if (!visualizationRunning) {
@@ -452,6 +506,7 @@ export const Grid = React.memo(({ isDarkMode }) => {
     <div className="parent-container">
       <div
         className="grid-container"
+        ref={gridRef}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
       >
@@ -463,7 +518,7 @@ export const Grid = React.memo(({ isDarkMode }) => {
               <span style={{ color: "#fd686f" }}>end</span> node, respectively.
               <span className="info-icon">
                 <FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>
-                <span className="tooltip-text-right">
+                <span className="tooltip tooltip-right">
                   Click on or drag your mouse over cells to <b>draw walls</b> (
                   <span style={{ color: "#5ef19b", fontWeight: "1000" }}>
                     start
@@ -491,9 +546,18 @@ export const Grid = React.memo(({ isDarkMode }) => {
             <div>
               <button
                 className="reset-button"
-                disabled={visualizationRunning || isComputing ? true : false}
+                disabled={
+                  isResetDisabled || visualizationRunning || isComputing
+                    ? true
+                    : false
+                }
                 onClick={handleResetGrid}
-                style={{ color: !visualizationRunning ? "white" : "grey" }}
+                style={{
+                  color:
+                    !visualizationRunning && !isResetDisabled
+                      ? "white"
+                      : "grey",
+                }}
               >
                 Reset Grid
               </button>
@@ -505,6 +569,7 @@ export const Grid = React.memo(({ isDarkMode }) => {
           style={{
             backgroundColor: `${isDarkMode ? "#0D1117" : "white"}`,
             pointerEvents: `${!visualizationRunning ? "auto" : "none"}`,
+            overflow: "hidden",
           }}
         >
           {isComputing ? (
@@ -527,31 +592,13 @@ export const Grid = React.memo(({ isDarkMode }) => {
                   weight={node.weight}
                   setAnimationCount={setAnimationCount}
                   animationType={animationType}
-                  onClick={() => handleNodeClick(rowIndex, colIndex)}
-                  onMouseEnter={() => handleNodeDrag(rowIndex, colIndex)}
+                  onClick={(e) => handleNodeClick(rowIndex, colIndex, e)}
+                  onMouseEnter={(e) => handleNodeDrag(rowIndex, colIndex, e)}
                   isDarkMode={isDarkMode}
                 />
               ))}
             </div>
           ))}
-        </div>
-        <div className="legend">
-          <div className="legend-item">
-            <span className="legend-node green"></span>
-            <label className="legend-label">Start node</label>
-          </div>
-          <div className="legend-item">
-            <span className="legend-node red"></span>
-            <label className="legend-label">End node</label>
-          </div>
-          <div className="legend-item">
-            <span className="legend-node blue"></span>
-            <label className="legend-label">Wall</label>
-          </div>
-          <div className="legend-item">
-            <span className="legend-node grey"></span>
-            <label className="legend-label">Weight</label>
-          </div>
         </div>
       </div>
       <div className="menu">
@@ -578,7 +625,7 @@ export const Grid = React.memo(({ isDarkMode }) => {
             Algorithm
             <div className="info-icon">
               <FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>
-              <span className="tooltip-text-down">
+              <span className="tooltip tooltip-menu-down">
                 <ol>
                   <li>
                     BFS, Dijkstra's and A* <b>guarantee</b> the shortest path
@@ -618,14 +665,14 @@ export const Grid = React.memo(({ isDarkMode }) => {
             Animation
             <div className="info-icon">
               <FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>
-              <span className="tooltip-text-right-animation">
+              <span className="tooltip tooltip-menu-right animation">
                 Select an animation style for the pathfinding visualizer.
               </span>
             </div>
           </label>
           <select
             disabled={
-              (visualizationRunning || isComputing) || algo === ALGOS.dfs
+              visualizationRunning || isComputing || algo === ALGOS.dfs
                 ? true
                 : false
             }
@@ -658,7 +705,34 @@ export const Grid = React.memo(({ isDarkMode }) => {
             <label>{Math.round((animationTime / 1000) * 2)} sec</label>
           </div>
         </div>
-
+        <div className="weight-menu">
+          <label>
+            Weight value
+            <div className="info-icon">
+              <FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>
+              <span className="tooltip tooltip-menu-right weight">
+                Press and hold the CTRL key while clicking or dragging your
+                mouse over cells to set its weight to the configured weight
+                value.
+                <br />
+                <br />
+                <b>*NOTE:</b> Weights are only used for Dijkstra and A*.
+              </span>
+            </div>
+          </label>
+          <div className="weight-slider">
+            <input
+              disabled={visualizationRunning || isComputing ? true : false}
+              onChange={changeWeightValue}
+              id="weight_slider"
+              type="range"
+              min={1}
+              max={10}
+              defaultValue={1}
+            />
+            <label>{weightValue}</label>
+          </div>
+        </div>
         <div>
           <button
             className="visualize-button"
@@ -667,7 +741,7 @@ export const Grid = React.memo(({ isDarkMode }) => {
                 ? true
                 : false
             }
-            onClick={execAlgo}
+            onClick={scrollToGrid}
             style={{ color: !visualizationRunning ? "white" : "grey" }}
           >
             {isComputing
