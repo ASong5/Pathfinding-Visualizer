@@ -637,9 +637,6 @@ export const Grid = React.memo(({ isDarkMode }) => {
                     Dijkstra's and A* <b>require weights</b> (if no weights set,
                     all weights cells default to weight of 1)
                   </li>
-                  <li>
-                    Dijkstra's and A* regress to a BFS if uniform weights.
-                  </li>
                 </ol>
               </span>
             </div>
